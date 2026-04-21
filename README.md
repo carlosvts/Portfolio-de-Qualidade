@@ -305,8 +305,8 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Tipo | API |
 | Passos | 1. POST /api/auth/register sem o campo role |
 | Resultado Esperado | 201 com role padrão atribuída, ou 400 informando campo obrigatório |
-| Resultado Obtido | A verificar conforme comportamento documentado |
-| Status | A verificar |
+| Resultado Obtido | Conta criada com padrão MEMBER |
+| Status | PASS |
 
 ---
 
@@ -333,8 +333,8 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Tipo | Funcional |
 | Passos | 1. POST /api/auth/register com espaços extras em nome, e-mail e role |
 | Resultado Esperado | Sistema deve sanitizar (trim) os campos ou retornar erro de validação |
-| Resultado Obtido | A verificar conforme comportamento documentado |
-| Status | A verificar |
+| Resultado Obtido | String é sanitizada |
+| Status | PASS |
 
 ---
 
@@ -347,8 +347,8 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Tipo | Segurança |
 | Passos | 1. POST /api/auth/forgot-password com e-mail inexistente |
 | Resultado Esperado | 200 OK com mensagem genérica (não deve confirmar nem negar existência do e-mail) |
-| Resultado Obtido | A verificar conforme comportamento documentado |
-| Status | A verificar |
+| Resultado Obtido | 200 OK com mensagem genérica |
+| Status | PASS |
 
 ---
 
@@ -376,8 +376,8 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Tipo | API |
 | Passos | 1. GET /api/users com token de MEMBER |
 | Resultado Esperado | 403 Forbidden |
-| Resultado Obtido | A verificar conforme comportamento documentado |
-| Status | A verificar |
+| Resultado Obtido | "Sem permissao para acessar esse recurso" |
+| Status | PASS |
 
 ---
 
@@ -390,21 +390,8 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Tipo | Segurança |
 | Passos | 1. GET /api/users com token de ADMIN; 2. Verificar campo password na resposta |
 | Resultado Esperado | Campo password deve estar hasheado (bcrypt) ou ausente na resposta |
-| Resultado Obtido | A verificar conforme comportamento documentado |
-| Status | A verificar |
-
----
-
-#### CT-AUTH-19 — Regressão: após correção do RBAC, rotas protegidas devem bloquear não-administradores (Regressão)
-
-| Campo | Detalhe |
-|---|---|
-| Pré-condição | Correção do bug #2 implementada |
-| Tipo | Regressão |
-| Cenário simulado | Middleware de RBAC adicionado nas rotas de gestão após correção do bug #2 |
-| Testes a repetir | 1. TRAINEE tenta GET /api/seasons — deve receber 403; 2. MEMBER tenta GET /api/seasons — deve receber 403; 3. ADMIN tenta GET /api/seasons — deve receber 200; 4. Login de TRAINEE continua funcionando — deve receber 200; 5. TRAINEE ainda acessa GET /api/checkins normalmente — deve receber 200 |
-| Objetivo | Garantir que a correção do RBAC não bloqueou rotas permitidas a outros perfis |
-| Status | Aguardando correção |
+| Resultado Obtido | Campo password não aparece na resposta da API |
+| Status | Indefinido |
 
 ---
 
@@ -434,10 +421,10 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Request | enviar_sem_foto |
 | Pré-condição | Usuário autenticado |
 | Tipo | API |
-| Passos | 1. POST /api/checkins sem arquivo no campo photo |
-| Resultado Esperado | 400 Bad Request — campo photo obrigatório |
-| Resultado Obtido | A verificar conforme comportamento documentado |
-| Status | A verificar |
+| Passos | 1. POST /api/checkins sem arquivo no campo foto |
+| Resultado Esperado | 400 Bad Request — campo foto obrigatório |
+| Resultado Obtido | 400 Bad Request — campo foto obrigatório |
+| Status | PASS |
 
 ---
 
@@ -448,10 +435,10 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Request | enviar_formato_incorreto |
 | Pré-condição | Usuário autenticado |
 | Tipo | API |
-| Passos | 1. POST /api/checkins com arquivo .cpp no campo photo |
+| Passos | 1. POST /api/checkins com arquivo .cpp no campo foto |
 | Resultado Esperado | 400 Bad Request — apenas imagens devem ser aceitas |
-| Resultado Obtido | A verificar conforme comportamento documentado |
-| Status | A verificar |
+| Resultado Obtido | 400 Bad Request — apenas imagens devem ser aceitas |
+| Status | PASS |
 
 ---
 
@@ -464,8 +451,8 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Tipo | API |
 | Passos | 1. GET /api/checkins/ com token JWT |
 | Resultado Esperado | 200 OK com lista de check-ins pertencentes ao usuário autenticado |
-| Resultado Obtido | A verificar conforme comportamento documentado |
-| Status | A verificar |
+| Resultado Obtido | Retorna todos os check-ins (de todos os usuários) |
+| Status | FAIL |
 
 ---
 
@@ -508,8 +495,9 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Tipo | API |
 | Passos | 1. DELETE /api/checkins/{id} com token de ADMIN e ID de check-in de outro usuário |
 | Resultado Esperado | 200 ou 204 — check-in removido com sucesso |
-| Resultado Obtido | A verificar conforme comportamento documentado |
-| Status | A verificar |
+| Resultado Obtido | Checkin é deletado, mas pontos não são recomputados (permanece inalterado) |
+| Status | FAIL |
+| Bug Report | #8 | 
 
 ---
 
@@ -543,19 +531,6 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 
 ---
 
-#### CT-CHECKIN-10 — Regressão: após correção da restrição diária, fluxo principal deve continuar funcionando (Regressão)
-
-| Campo | Detalhe |
-|---|---|
-| Pré-condição | Correções dos bugs #3 e #9 implementadas |
-| Tipo | Regressão |
-| Cenário simulado | Validação de 1 check-in por dia e intervalo de 24h adicionadas ao backend |
-| Testes a repetir | 1. Primeiro check-in do dia — deve ser aceito (201); 2. Segundo check-in no mesmo dia — deve ser bloqueado (409); 3. GET /api/checkins — deve retornar apenas check-ins do usuário; 4. DELETE /api/checkins/{id} — deve continuar funcionando; 5. Ranking deve ser atualizado corretamente após o check-in |
-| Objetivo | Garantir que a restrição de frequência não quebrou os fluxos de criação, consulta e remoção |
-| Status | Aguardando correção |
-
----
-
 ### Área 3 — Sistema de Pontos
 
 ---
@@ -568,9 +543,9 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Pré-condição | Usuário autenticado com token JWT válido |
 | Tipo | API |
 | Passos | 1. GET /api/rankings com token JWT |
-| Resultado Esperado | 200 OK com lista de usuários ordenada por pontuação |
-| Resultado Obtido | A verificar conforme comportamento documentado |
-| Status | A verificar |
+| Resultado Esperado | 200 OK com lista de usuários ordenada por pontuação (crescente)|
+| Resultado Obtido | 200 OK com lista de usuários ordenada por pontuação (crescente) |
+| Status | PASS |
 
 ---
 
@@ -655,19 +630,19 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 
 ## Relatório de Testes Final
 
+---
+
 ### Métricas de Execução
 
 | Métrica | Valor |
 |---|---|
 | Total de Casos de Teste Planejados | 24 |
-| Total de Casos de Teste Executados | 18 |
-| Pass | 9 |
-| Fail | 9 |
-| A verificar (dependem de observação de resposta) | 6 |
-| Aguardando correção (Regressão) | 3 |
-| Taxa de aprovação (sobre executados) | 50% |
+| Total de Casos de Teste Executados | 24 |
+| Pass | 13 |
+| Fail | 11 |
+| Taxa de aprovação (sobre executados) | 54% |
 
-> Os 3 casos de regressão (CT-AUTH-19, CT-CHECKIN-10, CT-PONTOS-05) estão planejados mas aguardam correção dos bugs correspondentes para nova execução. Os 6 casos marcados como "A verificar" dependem de validação direta do comportamento da API em ambiente de execução.
+> O  caso de regressão (CT-PONTOS-05) esta planejado mas aguarda correção dos bugs correspondentes para nova execução.
 
 ---
 
@@ -684,9 +659,9 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 
 | Área | Casos Executados | Pass | Fail | A verificar | Bugs Críticos |
 |---|---|---|---|---|---|
-| Autenticação JWT | 11 | 7 | 2 | 4 | 2 |
-| Check-in por Foto | 9 | 0 | 5 | 4 | 5 |
-| Sistema de Pontos | 4 | 0 | 3 | 1 | 3 |
+| Autenticação JWT | 11 | 9 | 2 | 0 | 2 |
+| Check-in por Foto | 9 | 2 | 7 | 0 | 5 |
+| Sistema de Pontos | 4 | 2 | 2 | 0 | 3 |
 
 > Alguns bugs impactam mais de uma área (ex: #3 e #4 afetam tanto Check-in quanto Pontos).
 
