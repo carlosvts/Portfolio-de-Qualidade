@@ -632,21 +632,24 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 
 ---
 
-## Bug Reports
+# Bug Reports
 
-### Resumo
 
-| # | Título | Área | Severidade | Status |
-|---|--------|------|------------|--------|
-| #1 | Cadastro permite autenticacao sem verificacao de e-mail | Auth JWT | Critica | Aberto |
-| #2 | Usuario nao administrador acessa endpoint restrito | Auth JWT | Critica | Aberto |
-| #3 | Sistema permite multiplos check-ins por dia | Check-in / Pontos | Critica | Aberto |
-| #4 | Check-ins criados com status APPROVED em vez de PENDENTE | Check-in / Pontos | Critica | Aberto |
-| #5 | Endpoint de moderacao de status inexistente | Check-in | Critica | Aberto |
-| #6 | IDOR: usuario acessa check-ins de outros usuarios | Check-in | Critica | Aberto |
-| #7 | Codigo de configuracao de upload em disco nao utilizado | Check-in | Baixa | Aberto |
-| #8 | Remocao de check-in nao atualiza pontos nem contagem | Pontos | Critica | Aberto |
-| #9 | Sistema nao respeita intervalo minimo de 24h entre check-ins | Check-in | Critica | Aberto |
+## Resumo
+
+| #  | Título                                                                 | Área                 | Severidade | Status |
+|----|------------------------------------------------------------------------|----------------------|------------|--------|
+| #1  | Cadastro permite autenticação sem verificação de e-mail              | Auth JWT             | Maior      | Aberto |
+| #2  | Usuário não administrador acessa endpoint restrito                    | Auth JWT             | Maior      | Aberto |
+| #3  | Sistema permite múltiplos check-ins por dia                           | Check-in / Pontos    | Maior      | Aberto |
+| #4  | Check-ins criados com status APPROVED em vez de PENDENTE             | Check-in / Pontos    | Maior      | Aberto |
+| #5  | Endpoint de moderação de status inexistente                           | Check-in             | Maior      | Aberto |
+| #6  | IDOR: usuário acessa check-ins de outros usuários                     | Check-in             | Maior      | Aberto |
+| #7  | Código de configuração de upload em disco não utilizado               | Check-in             | Menor      | Aberto |
+| #8  | Remoção de check-in não atualiza pontos nem contagem                  | Pontos               | Maior      | Aberto |
+| #9  | Sistema não respeita intervalo mínimo de 24h entre check-ins          | Check-in             | Maior      | Aberto |
+| #10 | Ranking de usuários visível apenas para administradores               | Ranking / Auth / Visual     | Maior      | Aberto |
+| #11 | Sistema de pontos não decrementa                                       | Pontos  / Visual              | Maior      | Aberto |
 
 ---
 
@@ -664,20 +667,18 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Aguardando correção (Regressão) | 3 |
 | Taxa de aprovação (sobre executados) | 50% |
 
-> Os 3 casos de regressão (CT-AUTH-19, CT-CHECKIN-10, CT-PONTOS-05) estão planejados mas aguardam a correção dos bugs correspondentes para execução. Os 6 casos marcados "A verificar" exigem observação do comportamento real da API para registro do resultado final.
+> Os 3 casos de regressão (CT-AUTH-19, CT-CHECKIN-10, CT-PONTOS-05) estão planejados mas aguardam correção dos bugs correspondentes para nova execução. Os 6 casos marcados como "A verificar" dependem de validação direta do comportamento da API em ambiente de execução.
 
 ---
 
 ### Distribuição de Severidade dos Bugs
 
 | Severidade | Quantidade | Issues |
-|---|---|---|
-| Critica | 8 | #1, #2, #3, #4, #5, #6, #8, #9 |
-| Maior | 0 | — |
-| Baixa | 1 | #7 |
-| Total | 9 | |
-
----
+|------------|------------|--------|
+| Crítica    | 0          | 0      |
+| Maior      | 10         | #1, #2, #3, #4, #5, #6, #8, #9, #10, #11 |
+| Menor      | 1          | #7     |
+| Total      | 11         | 0      |
 
 ### Análise por Área
 
