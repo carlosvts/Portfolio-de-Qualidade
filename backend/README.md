@@ -1,74 +1,102 @@
-# Processo trainee: Carlos Vinicius Teixeira de Souza
+# Desafio QA: Ecossistema NaSalinha (Comp Júnior)
 
-## API QA Testing - NaSalinha
+Este repositório contém o ambiente de homologação do projeto **NaSalinha**, um sistema de check-in gamificado.
 
-## Descrição
+> Nota de Liderança (Gestão 2026.1)
+Este ambiente foi preparado especificamente para o treinamento de novos Analistas de Quality Assurance. O sistema contém **inconsistências propositais** para testar sua capacidade de auditoria, configuração de ambiente e reporte de bugs.
 
-Este repositório contém a execução de testes de API para o sistema NaSalinha, com foco na validação dos fluxos de autenticação e cadastro de usuários.
 
-Os testes foram realizados utilizando o Insomnia, simulando diferentes cenários de uso para garantir o comportamento correto da API.
-
----
-
-## Escopo Atual
-
-Até o momento, foram testados os seguintes cenários:
-
-### Login
-
-* Login com credenciais válidas
-* Login com senha incorreta
-* Login com usuário inexistente
-* Campos obrigatórios ausentes
-* Validação de formato de entrada (email inválido)
-* Acesso a rotas protegidas com e sem token
-
-### Cadastro de Usuário
-
-* Cadastro com dados válidos
-* Cadastro com email já existente
-* Validação de senha fraca
-* Campos obrigatórios ausentes (email, nome)
-* Validação de formato de email
-* Validação de role (valores permitidos e inválidos)
-* Comportamento de role padrão (default)
+## Créditos de Desenvolvimento
+O projeto original foi desenvolvido por **Lucas Henrique Lopes Costa** (Ex-Trainee da Comp Júnior) como parte de sua trilha de capacitação técnica. 
+A manutenção atual e a coordenação deste desafio são de responsabilidade da **Diretoria de Projetos**.
 
 ---
 
-## Tecnologias e Ferramentas
-
-* Insomnia → Execução dos testes de API
-* API local (Node.js) → Ambiente testado
-* Github Issues (WIP)
-* Github Projects (WIP)
-
----
-
-## Tipos de Testes Realizados
-
-* Testes funcionais
-* Testes de validação de entrada
-* Testes de autenticação
-* Testes de casos negativos
+## O Objetivo do Treinamento
+Sua missão como trainee de QA é atuar como a última linha de defesa antes do "deploy" em produção:
+1. **Mapear Bugs:** Encontrar falhas de segurança, erros de pontuação e problemas de interface.
+2. **Configuração de Infra:** Garantir que todos os serviços externos estejam integrados corretamente.
+3. **Validar Regras de Negócio:** Garantir que permissões de usuário (Admin vs Trainee) e cálculos de ranking estejam íntegros.
 
 ---
 
-## Estrutura do Projeto
-
-* `/insomnia` → Coleção com os testes de login e cadastro
-
----
-
-## Como Executar os Testes
-
-1. Importar a coleção do Insomnia
-2. Executar os requests organizados por pastas (login e cadastro)
-3. Validar as respostas conforme esperado
+## Tecnologias Utilizadas
+* **Backend:** Node.js, Express, Prisma ORM.
+* **Frontend:** React 18, TailwindCSS.
+* **Banco de Dados:** PostgreSQL (via Docker).
+* **Serviços:** Cloudinary (Imagens) e Nodemailer/Mailtrap (E-mails).
 
 ---
 
-## Próximos Passos
+## Como Executar o Projeto
 
-* Testes de upload de imagens
-* Testes de sistema de pontuação
-* Estruturação de bug reports (GitHub Issues)
+### 1. Preparação
+Certifique-se de ter o **Docker** e **Git** instalados.
+
+### 2. Configuração de Variáveis (O Primeiro Desafio)
+Vá até a pasta `/backend`, copie o arquivo `.env.example` para um novo arquivo `.env`.
+
+>important Configuração de Chaves Obrigatória
+Para que o sistema funcione, você deve criar suas próprias contas (gratuitas) nos serviços abaixo:
+* **E-mails:** Utilize o [Mailtrap](https://mailtrap.io/) (Sandbox).
+* **Fotos:** Utilize o [Cloudinary](https://cloudinary.com/).
+
+Preencha as credenciais no seu `.env`. Identificar se o erro é de **configuração** ou de **código** faz parte do seu teste!
+
+
+### 3. Execução com Docker
+Na raiz do projeto, suba os containers:
+```bash
+docker-compose up --build
+```
+
+Rode o comando para executar as migrations e seeders do backend:
+
+```bash
+docker-compose exec backend npx prisma migrate dev --name init
+docker-compose exec backend npx prisma db seed
+```
+FRONTEND_URL=http://localhost:3000
+
+## Níveis de Usuário
+
+- **Admin** - Acesso total ao sistema, gerenciamento de temporadas
+- **Membro** - Check-ins, visualização de ranking
+- **Trainee** - Check-ins e pontuação
+
+## Principais Endpoints
+
+- **Auth**: `/api/auth/register`, `/api/auth/login`
+- **Users**: `/api/users` (CRUD completo)
+- **Check-ins**: `/api/checkins` (CRUD completo)
+- **Rankings**: `/api/rankings`
+- **Seasons**: `/api/seasons` (CRUD completo - Admin only)
+
+## Estrutura do Banco de Dados
+
+### Entidades Principais
+
+1. **Users** - Dados dos usuários (nome, email, senha hash, role)
+2. **CheckIns** - Registros de check-in com foto
+3. **Seasons** - Temporadas de competição
+4. **Points** - Pontuação dos usuários
+
+### Relacionamentos
+
+- User → CheckIns (1:N)
+- Season → CheckIns (1:N)
+- User → Points → Season (N:N através de Points)
+
+## Segurança
+
+- Senhas criptografadas com bcrypt
+- Autenticação JWT com refresh tokens
+- Rate limiting para prevenir abuso
+- Validação de dados com Joi
+- Headers de segurança com Helmet
+- CORS configurado adequadamente
+
+## Sistema de E-mails
+
+- Confirmação de cadastro
+- Recuperação de senha
