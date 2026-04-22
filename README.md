@@ -555,6 +555,20 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 
 ---
 
+#### CT-CHECKIN-XX (Ad-hoc) — Código de upload em disco não é utilizado em produção
+
+| Campo | Detalhe |
+|---|---|
+| Tipo | Funcional / Análise de Código |
+| Pré-condição | Acesso ao código-fonte do projeto; ambiente rodando via Docker |
+| Passos | 1. Inspecionar o código de configuração de upload; 2. Verificar se há distinção de ambientes (dev/prod) no Dockerfile e docker-compose.yml; 3. Verificar se o código de upload em disco é referenciado em algum fluxo ativo |
+| Resultado Esperado | Dockerfile e docker-compose devem definir builds distintas para desenvolvimento e produção; código de upload em disco deve estar ativo apenas no ambiente correto |
+| Resultado Obtido | Nenhuma distinção de ambiente encontrada nos arquivos de configuração Docker; código de upload em disco presente mas inutilizado em qualquer ambiente |
+| Status | FAIL |
+| Bug Report | #7 |
+
+---
+
 ### Área 3 — Sistema de Pontos
 
 ---
@@ -628,6 +642,34 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Testes a repetir | 1. Criar check-in — pontos não devem ser atribuídos; 2. ADMIN aprovar check-in — pontos devem ser atribuídos; 3. Deletar check-in aprovado — pontos devem ser subtraídos; 4. Consultar GET /api/rankings — posição do usuário deve estar atualizada; 5. Segundo check-in no mesmo dia — bloqueado, pontos inalterados |
 | Objetivo | Garantir que a correção da atribuição de pontos não afetou os fluxos de criação, aprovação, remoção e ranking |
 | Status | Aguardando correção |
+
+### Área 4 - Extras
+
+#### CT-FRONTEND-01 (Ad-hoc) — Ranking de pontuação deve ser visível na interface para todos os usuários autenticados
+
+| Campo | Detalhe |
+|---|---|
+| Tipo | Funcional / Interface |
+| Pré-condição | Usuário autenticado com qualquer role |
+| Passos | 1. Fazer login com qualquer usuário; 2. Navegar pela interface do sistema em busca da tela de ranking |
+| Resultado Esperado | Tela de ranking deve estar acessível na interface para qualquer usuário autenticado |
+| Resultado Obtido | Nenhuma tela de ranking existe no frontend; a pontuação só é consultável via requisição direta à API |
+| Status | FAIL |
+| Bug Report | #10 |
+
+---
+
+#### CT-FRONTEND-02 (Ad-hoc) — Sistema de pontos deve refletir decrementos na interface
+
+| Campo | Detalhe |
+|---|---|
+| Tipo | Funcional / Interface |
+| Pré-condição | Usuário autenticado com pontos acumulados; ao menos um check-in aprovado |
+| Passos | 1. Verificar saldo de pontos na interface; 2. Deletar um check-in aprovado; 3. Verificar saldo de pontos na interface após a remoção |
+| Resultado Esperado | Saldo de pontos deve ser decrementado e o ranking atualizado na tela |
+| Resultado Obtido | Saldo de pontos permanece inalterado na interface após remoção do check-in. O que condiz com o erro apresentado em CT-PONTOS-03 |
+| Status | FAIL |
+| Bug Report | #11 |
 
 ---
 
