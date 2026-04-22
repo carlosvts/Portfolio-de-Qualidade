@@ -710,7 +710,7 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Aguardando correção | 3 |
 | Taxa de aprovação (sobre executados) | 53% |
 
-> O  caso de regressão (CT-PONTOS-05) esta planejado mas aguarda correção dos bugs correspondentes para nova execução.
+> Os  casos de regressão (CT-PONTOS-05, CT-CHECKIN-10, CT-AUTH-19) estão planejados mas aguardam correção dos bugs correspondentes para nova execução.
 
 ---
 
@@ -730,7 +730,7 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Autenticação JWT | 19 | 15 | 2 | 1 | 1 | 2 |
 | Check-in por Foto | 10 | 2 | 7 | 0 | 1 | 5 |
 | Sistema de Pontos | 5 | 1 | 3 | 0 | 1 | 3 |
-> Alguns bugs impactam mais de uma área (ex: #3 e #4 afetam tanto Check-in quanto Pontos).
+> Alguns bugs impactam mais de uma área (ex: #3 e #4 afetam tanto Check-in quanto Pontos). Outros testes (como ad-hoc) não foram planejados e, por isso, não constam na tabela
 
 ---
 
