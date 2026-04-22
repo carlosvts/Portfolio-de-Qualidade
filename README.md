@@ -393,6 +393,17 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Resultado Obtido | Campo password não aparece na resposta da API |
 | Status | Indefinido |
 
+#### CT-AUTH-19 — Regressão: após correção dos bugs de autenticação e autorização, fluxos de acesso devem funcionar corretamente (Regressão)
+
+| Campo | Detalhe |
+|---|---|
+| Pré-condição | Correções dos bugs #1 e #2 implementadas |
+| Tipo | Regressão |
+| Cenário simulado | Cadastro exige verificação de e-mail; endpoints restritos bloqueiam roles não autorizadas |
+| Testes a repetir | 1. Cadastrar novo usuário — tokens não devem ser retornados antes da verificação de e-mail; 2. Login com e-mail não verificado — deve ser bloqueado; 3. Login válido após verificação — deve retornar tokens; 4. GET /api/seasons com token MEMBER — deve retornar 403 Forbidden; 5. GET /api/seasons com token ADMIN — deve retornar 200 OK |
+| Objetivo | Garantir que a correção do fluxo de cadastro e do RBAC não afetou o login válido nem o acesso de administradores |
+| Status | Aguardando correção |
+
 ---
 
 ### Área 2 — Check-in por Foto
@@ -531,6 +542,19 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 
 ---
 
+#### CT-CHECKIN-10 — Regressão: após correção dos bugs de check-in, fluxo completo deve respeitar regras de negócio (Regressão)
+
+| Campo | Detalhe |
+|---|---|
+| Pré-condição | Correções dos bugs #3, #4, #5 e #6 implementadas |
+| Tipo | Regressão |
+| Cenário simulado | Check-in criado com status PENDENTE; endpoint de moderação disponível; restrição de 24h ativa; acesso IDOR bloqueado |
+| Testes a repetir | 1. POST /api/checkins com imagem válida — status deve ser PENDENTE; 2. POST /api/checkins no mesmo dia — deve ser bloqueado com 400 ou 409; 3. PATCH /checkins/:id com ADMIN — deve atualizar status para APPROVED ou REJECTED; 4. GET /api/checkins/{id} com token de outro usuário sem ser ADMIN — deve retornar 403 ou 404; 5. DELETE /api/checkins/{id} com dono do check-in — deve remover com sucesso |
+| Objetivo | Garantir que as correções do módulo de check-in não causaram regressão nos fluxos de envio válido, listagem e remoção |
+| Status | Aguardando correção |
+
+---
+
 ### Área 3 — Sistema de Pontos
 
 ---
@@ -636,8 +660,8 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 
 | Métrica | Valor |
 |---|---|
-| Total de Casos de Teste Planejados | 24 |
-| Total de Casos de Teste Executados | 24 |
+| Total de Casos de Teste Planejados | 34 |
+| Total de Casos de Teste Executados | 34 |
 | Pass | 13 |
 | Fail | 11 |
 | Taxa de aprovação (sobre executados) | 54% |
@@ -653,15 +677,15 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Crítica    | 0          | 0      |
 | Maior      | 10         | #1, #2, #3, #4, #5, #6, #8, #9, #10, #11 |
 | Menor      | 1          | #7     |
-| Total      | 11         | 0      |
+| Total      | 11         | 11     |
 
 ### Análise por Área
 
 | Área | Casos Executados | Pass | Fail | A verificar | Bugs Críticos |
 |---|---|---|---|---|---|
-| Autenticação JWT | 11 | 9 | 2 | 0 | 2 |
-| Check-in por Foto | 9 | 2 | 7 | 0 | 5 |
-| Sistema de Pontos | 4 | 2 | 2 | 0 | 3 |
+| Autenticação JWT | 19 | 9 | 2 | 0 | 2 |
+| Check-in por Foto | 10 | 2 | 7 | 0 | 5 |
+| Sistema de Pontos | 5 | 2 | 2 | 0 | 3 |
 
 > Alguns bugs impactam mais de uma área (ex: #3 e #4 afetam tanto Check-in quanto Pontos).
 
