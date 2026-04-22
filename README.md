@@ -702,13 +702,13 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 
 | Métrica | Valor |
 |---|---|
-| Total de Casos de Teste Planejados | 34 |
-| Total de Casos de Teste Executados | 31 |
+| Total de Casos de Teste Planejados | 37 |
+| Total de Casos de Teste Executados | 34 |
 | Pass | 18  |
-| Fail | 12  |
+| Fail | 15  |
 | Indefinido | 1 |
 | Aguardando correção | 3 |
-| Taxa de aprovação (sobre executados) | 60% |
+| Taxa de aprovação (sobre executados) | 53% |
 
 > O  caso de regressão (CT-PONTOS-05) esta planejado mas aguarda correção dos bugs correspondentes para nova execução.
 
