@@ -400,7 +400,7 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Pré-condição | Correções dos bugs #1 e #2 implementadas |
 | Tipo | Regressão |
 | Cenário simulado | Cadastro exige verificação de e-mail; endpoints restritos bloqueiam roles não autorizadas |
-| Testes a repetir | 1. Cadastrar novo usuário — tokens não devem ser retornados antes da verificação de e-mail; 2. Login com e-mail não verificado — deve ser bloqueado; 3. Login válido após verificação — deve retornar tokens; 4. GET /api/seasons com token MEMBER — deve retornar 403 Forbidden; 5. GET /api/seasons com token ADMIN — deve retornar 200 OK |
+| Testes a repetir | 1. Cadastrar novo usuário — tokens não devem ser retornados antes da verificação de e-mail; 2. Login com e-mail não verificado — deve ser bloqueado; 3. Login válido após verificação — deve retornar tokens; 4. GET /api/seasons com token MEMBER ou TRAINEE — deve retornar 403 Forbidden; 5. GET /api/seasons com token ADMIN — deve retornar 200 OK |
 | Objetivo | Garantir que a correção do fluxo de cadastro e do RBAC não afetou o login válido nem o acesso de administradores |
 | Status | Aguardando correção |
 
@@ -549,8 +549,8 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Pré-condição | Correções dos bugs #3, #4, #5 e #6 implementadas |
 | Tipo | Regressão |
 | Cenário simulado | Check-in criado com status PENDENTE; endpoint de moderação disponível; restrição de 24h ativa; acesso IDOR bloqueado |
-| Testes a repetir | 1. POST /api/checkins com imagem válida — status deve ser PENDENTE; 2. POST /api/checkins no mesmo dia — deve ser bloqueado com 400 ou 409; 3. PATCH /checkins/:id com ADMIN — deve atualizar status para APPROVED ou REJECTED; 4. GET /api/checkins/{id} com token de outro usuário sem ser ADMIN — deve retornar 403 ou 404; 5. DELETE /api/checkins/{id} com dono do check-in — deve remover com sucesso |
-| Objetivo | Garantir que as correções do módulo de check-in não causaram regressão nos fluxos de envio válido, listagem e remoção |
+| Testes a repetir | 1. POST /api/checkins com imagem válida — status deve ser PENDENTE; 2. POST /api/checkins no mesmo dia — deve ser bloqueado com 400 ou 409; 3. PATCH /checkins/:id com ADMIN — deve atualizar status para APPROVED ou REJECTED; 4. GET /api/checkins/{id} com token de outro usuário sem ser ADMIN — deve retornar 403 ou 404; 5. DELETE /api/checkins/{id} com token de dono do check-in — deve remover com sucesso |
+| Objetivo | Garantir que as correções do módulo de check-in não causaram regressão nos fluxos de envio válido, listagem e remoção. |
 | Status | Aguardando correção |
 
 ---
@@ -639,7 +639,7 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Pré-condição | Correções dos bugs #4, #8 e #3 implementadas |
 | Tipo | Regressão |
 | Cenário simulado | Pontos atribuídos apenas após aprovação; subtraídos ao deletar check-in |
-| Testes a repetir | 1. Criar check-in — pontos não devem ser atribuídos; 2. ADMIN aprovar check-in — pontos devem ser atribuídos; 3. Deletar check-in aprovado — pontos devem ser subtraídos; 4. Consultar GET /api/rankings — posição do usuário deve estar atualizada; 5. Segundo check-in no mesmo dia — bloqueado, pontos inalterados |
+| Testes a repetir | 1. Criar check-in — pontos não devem ser atribuídos, deve manter status PENDENTE; 2. ADMIN aprovar/rejeitar check-in — pontos devem ser atribuídos ou manter o mesmo; 3. Deletar check-in aprovado — pontos devem ser subtraídos; 4. Consultar GET /api/rankings — posição do usuário deve estar atualizada de acordo com adição/remoção; 5. Segundo check-in no mesmo dia — bloqueado, pontos inalterados;|
 | Objetivo | Garantir que a correção da atribuição de pontos não afetou os fluxos de criação, aprovação, remoção e ranking |
 | Status | Aguardando correção |
 
