@@ -1,728 +1,1393 @@
-_type: export
-__export_format: 4
-__export_date: 2026-04-21T00:00:00.000Z
-__export_source: insomnia.desktop.app:v2023.5.8
-resources:
-  # ============================================================
-  # WORKSPACE
-  # ============================================================
-  - _id: wrk_nasalinha
-    _type: workspace
-    name: NaSalinha — QA Portfolio
-    description: Auditoria completa de qualidade do sistema NaSalinha
-    scope: collection
-
-  # ============================================================
-  # ENVIRONMENT
-  # ============================================================
-  - _id: env_base
-    _type: environment
-    name: Base Environment
-    parentId: wrk_nasalinha
-    data:
-      base_url: http://localhost:3000
-      token_admin: ""
-      token_member: ""
-      token_trainee: ""
-
-  # ============================================================
-  # FOLDER: logins_cadastros
-  # ============================================================
-  - _id: fld_logins_cadastros
-    _type: request_group
-    name: logins_cadastros
-    parentId: wrk_nasalinha
-
-  # --- SUB-FOLDER: teste-logins ---
-  - _id: fld_teste_logins
-    _type: request_group
-    name: teste-logins
-    parentId: fld_logins_cadastros
-
-  - _id: req_login_usuario
-    _type: request
-    name: login-usuario
-    parentId: fld_teste_logins
-    method: POST
-    url: "{{ _.base_url }}/api/auth/login"
-    description: "CT-AUTH-01 | Login válido com credenciais corretas"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "email": "carlosviniciusadmin@gmail.com",
-          "password": "SenhaValida123!"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_login_sem_criar_conta
-    _type: request
-    name: login-sem-criar-conta
-    parentId: fld_teste_logins
-    method: POST
-    url: "{{ _.base_url }}/api/auth/login"
-    description: "CT-AUTH-03 | Login com e-mail inexistente no sistema"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "email": "naoexiste@gmail.com",
-          "password": "SenhaQualquer123!"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_login_usuario_invalido
-    _type: request
-    name: login-usuario-invalido
-    parentId: fld_teste_logins
-    method: POST
-    url: "{{ _.base_url }}/api/auth/login"
-    description: "Login com usuário que não possui conta ativa"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "email": "usuarioinativo@gmail.com",
-          "password": "SenhaValida123!"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_login_senha_invalida
-    _type: request
-    name: login-senha-invalida
-    parentId: fld_teste_logins
-    method: POST
-    url: "{{ _.base_url }}/api/auth/login"
-    description: "CT-AUTH-02 | Login com senha incorreta para usuário existente"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "email": "pedro@example.com",
-          "password": "senha123Errada"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_login_campos_vazios
-    _type: request
-    name: login-campos-vazios
-    parentId: fld_teste_logins
-    method: POST
-    url: "{{ _.base_url }}/api/auth/login"
-    description: "CT-AUTH-04 | Login com e-mail e senha em branco"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "email": "",
-          "password": ""
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_login_faltando_senha
-    _type: request
-    name: login-faltando-senha
-    parentId: fld_teste_logins
-    method: POST
-    url: "{{ _.base_url }}/api/auth/login"
-    description: "CT-AUTH-05 | Login sem o campo senha no body"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "email": "pedro@example.com"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_login_faltando_email
-    _type: request
-    name: login-faltando-email
-    parentId: fld_teste_logins
-    method: POST
-    url: "{{ _.base_url }}/api/auth/login"
-    description: "Login sem o campo e-mail no body"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "password": "SenhaValida123!"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_login_formato_invalido_email
-    _type: request
-    name: login-formato-invalido-email
-    parentId: fld_teste_logins
-    method: POST
-    url: "{{ _.base_url }}/api/auth/login"
-    description: "CT-AUTH-06 | Login com e-mail sem formato válido (ex: 'pedro')"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "email": "pedro",
-          "password": "SenhaValida123!"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_login_case_sensitive
-    _type: request
-    name: login-case-sensitive
-    parentId: fld_teste_logins
-    method: POST
-    url: "{{ _.base_url }}/api/auth/login"
-    description: "Login com e-mail e senha com variação de capitalização"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "email": "CARLOSVINICIUSADMIN@GMAIL.COM",
-          "password": "SENHAVALIDA123!"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_login_sql_injection
-    _type: request
-    name: login-sql-injection
-    parentId: fld_teste_logins
-    method: POST
-    url: "{{ _.base_url }}/api/auth/login"
-    description: "CT-AUTH-07 | Tentativa de SQL Injection no campo e-mail"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "email": "' OR 1=1 --",
-          "password": "qualquercoisa"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_login_varias_tentativas_erradas
-    _type: request
-    name: login-varias-tentativas-erradas
-    parentId: fld_teste_logins
-    method: POST
-    url: "{{ _.base_url }}/api/auth/login"
-    description: "Múltiplas tentativas de login com credenciais erradas (rate limiting / lockout)"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "email": "pedro@example.com",
-          "password": "senhaerrada"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  # --- SUB-FOLDER: teste cadastros ---
-  - _id: fld_teste_cadastros
-    _type: request_group
-    name: teste cadastros
-    parentId: fld_logins_cadastros
-
-  - _id: req_cadastrar_usuario
-    _type: request
-    name: cadastrar-usuario
-    parentId: fld_teste_cadastros
-    method: POST
-    url: "{{ _.base_url }}/api/auth/register"
-    description: "CT-AUTH-08 | Cadastro válido com role ADMIN"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "name": "Carlos Vinicius",
-          "email": "carlosviniciusadmin@gmail.com",
-          "password": "SenhaValida123!",
-          "role": "ADMIN"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_cadastro_sem_nome
-    _type: request
-    name: cadastro-sem-nome
-    parentId: fld_teste_cadastros
-    method: POST
-    url: "{{ _.base_url }}/api/auth/register"
-    description: "CT-AUTH-10 | Cadastro com campo nome vazio"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "name": "",
-          "email": "teste@gmail.com",
-          "password": "SenhaValida123!",
-          "role": "MEMBER"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_cadastro_sem_email
-    _type: request
-    name: cadastro-sem-email
-    parentId: fld_teste_cadastros
-    method: POST
-    url: "{{ _.base_url }}/api/auth/register"
-    description: "Cadastro com campo e-mail vazio"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "name": "Teste Usuário",
-          "email": "",
-          "password": "SenhaValida123!",
-          "role": "MEMBER"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_cadastro_ja_cadastrado
-    _type: request
-    name: cadastro-ja-cadastrado
-    parentId: fld_teste_cadastros
-    method: POST
-    url: "{{ _.base_url }}/api/auth/register"
-    description: "CT-AUTH-09 | Cadastro com e-mail já existente no sistema"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "name": "Bruno",
-          "email": "bruno@gmail.com",
-          "password": "SenhaValida123!",
-          "role": "MEMBER"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_cadastro_senha_fraca
-    _type: request
-    name: cadastro-senha-fraca
-    parentId: fld_teste_cadastros
-    method: POST
-    url: "{{ _.base_url }}/api/auth/register"
-    description: "CT-AUTH-11 | Cadastro com senha curta/fraca"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "name": "Teste Fraco",
-          "email": "senhafraca@gmail.com",
-          "password": "123",
-          "role": "MEMBER"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_cadastro_faltando_role_conta_ja_existe
-    _type: request
-    name: cadastro-faltando-role-conta-ja-existe
-    parentId: fld_teste_cadastros
-    method: POST
-    url: "{{ _.base_url }}/api/auth/register"
-    description: "Cadastro sem campo role para conta já existente"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "name": "Bruno",
-          "email": "bruno@gmail.com",
-          "password": "SenhaValida123!"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_cadastro_faltando_role_conta_nao_existe
-    _type: request
-    name: cadastro-faltando-role-conta-nao-existe
-    parentId: fld_teste_cadastros
-    method: POST
-    url: "{{ _.base_url }}/api/auth/register"
-    description: "CT-AUTH-12 | Cadastro sem campo role para conta nova"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "name": "Sem Role",
-          "email": "semrole@gmail.com",
-          "password": "SenhaValida123!"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_cadastro_com_role_inexistente
-    _type: request
-    name: cadastro-com-role-inexistente
-    parentId: fld_teste_cadastros
-    method: POST
-    url: "{{ _.base_url }}/api/auth/register"
-    description: "CT-AUTH-13 | Cadastro com role inválida ('PRESIDENTE')"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "name": "Teste Role Inválida",
-          "email": "roleinvalida@gmail.com",
-          "password": "SenhaValida123!",
-          "role": "PRESIDENTE"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_cadastro_com_string_espacada
-    _type: request
-    name: cadastro-com-string-espacada
-    parentId: fld_teste_cadastros
-    method: POST
-    url: "{{ _.base_url }}/api/auth/register"
-    description: "CT-AUTH-14 | Cadastro com espaços nos campos nome, e-mail e senha"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "name": "   Carlos   ",
-          "email": "   carlos@gmail.com   ",
-          "password": "   SenhaValida123!   ",
-          "role": "MEMBER"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_cadastro_com_email_e_role_espacado
-    _type: request
-    name: cadastro-com-email-e-role-espacado
-    parentId: fld_teste_cadastros
-    method: POST
-    url: "{{ _.base_url }}/api/auth/register"
-    description: "CT-AUTH-14 | Cadastro com espaços no e-mail e na role"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "name": "Teste Espaço",
-          "email": "   espacado@gmail.com   ",
-          "password": "SenhaValida123!",
-          "role": "   MEMBER   "
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  # ============================================================
-  # FOLDER: esqueceu_senha
-  # ============================================================
-  - _id: fld_esqueceu_senha
-    _type: request_group
-    name: esqueceu_senha
-    parentId: wrk_nasalinha
-
-  - _id: req_email_existe
-    _type: request
-    name: email_existe
-    parentId: fld_esqueceu_senha
-    method: POST
-    url: "{{ _.base_url }}/api/auth/forgot-password"
-    description: "Recuperação de senha com e-mail cadastrado"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "email": "carlosviniciusadmin@gmail.com"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_email_nao_existe
-    _type: request
-    name: email_nao_existe
-    parentId: fld_esqueceu_senha
-    method: POST
-    url: "{{ _.base_url }}/api/auth/forgot-password"
-    description: "CT-AUTH-15 | Recuperação de senha com e-mail inexistente"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "email": "carlosviniciusNAOEXISTE@gmail.com"
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_email_vazio
-    _type: request
-    name: email_vazio
-    parentId: fld_esqueceu_senha
-    method: POST
-    url: "{{ _.base_url }}/api/auth/forgot-password"
-    description: "Recuperação de senha com campo e-mail vazio"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "email": ""
-        }
-    headers:
-      - name: Content-Type
-        value: application/json
-
-  # ============================================================
-  # FOLDER: admin
-  # ============================================================
-  - _id: fld_admin
-    _type: request_group
-    name: admin
-    parentId: wrk_nasalinha
-
-  - _id: req_logando_sem_ser_admin
-    _type: request
-    name: logando_sem_ser_admin
-    parentId: fld_admin
-    method: GET
-    url: "{{ _.base_url }}/api/seasons"
-    description: "CT-AUTH-16 | Acesso a rota restrita com token de usuário não-admin"
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_member }}"
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_atualizar_nota
-    _type: request
-    name: atualizar_nota
-    parentId: fld_admin
-    method: PATCH
-    url: "{{ _.base_url }}/checkins/:id"
-    description: "CT-CHECKIN-08 | Tentativa de alteração de status de check-in"
-    body:
-      mimeType: application/json
-      text: |
-        {
-          "status": "APPROVED"
-        }
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_admin }}"
-      - name: Content-Type
-        value: application/json
-
-  # ============================================================
-  # FOLDER: get_api
-  # ============================================================
-  - _id: fld_get_api
-    _type: request_group
-    name: get_api
-    parentId: wrk_nasalinha
-
-  - _id: req_acessar_api_sendo_member
-    _type: request
-    name: acessar_api_sendo_member
-    parentId: fld_get_api
-    method: GET
-    url: "{{ _.base_url }}/api/users"
-    description: "CT-AUTH-17 | Acesso ao endpoint de usuários com role MEMBER"
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_member }}"
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_check_senha_hash
-    _type: request
-    name: check_senha_hash
-    parentId: fld_get_api
-    method: GET
-    url: "{{ _.base_url }}/api/users"
-    description: "CT-AUTH-18 | Verificação se senha aparece hasheada na resposta da API"
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_admin }}"
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_get_checkins
-    _type: request
-    name: get_checkins
-    parentId: fld_get_api
-    method: GET
-    url: "{{ _.base_url }}/api/checkins"
-    description: "Listagem de todos os check-ins com token de ADMIN"
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_admin }}"
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_get_seasons_sendo_member
-    _type: request
-    name: get_seasons_sendo_member
-    parentId: fld_get_api
-    method: GET
-    url: "{{ _.base_url }}/api/seasons"
-    description: "CT-AUTH-16 | Acesso ao endpoint de seasons com role MEMBER"
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_member }}"
-      - name: Content-Type
-        value: application/json
-
-  # ============================================================
-  # FOLDER: modulo-checkin
-  # ============================================================
-  - _id: fld_modulo_checkin
-    _type: request_group
-    name: modulo-checkin
-    parentId: wrk_nasalinha
-
-  - _id: req_enviar_sem_foto
-    _type: request
-    name: enviar_sem_foto
-    parentId: fld_modulo_checkin
-    method: POST
-    url: "{{ _.base_url }}/api/checkins"
-    description: "CT-CHECKIN-02 | Envio de check-in sem arquivo anexado"
-    body:
-      mimeType: multipart/form-data
-      params: []
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_member }}"
-
-  - _id: req_enviar_formato_incorreto
-    _type: request
-    name: enviar_formato_incorreto
-    parentId: fld_modulo_checkin
-    method: POST
-    url: "{{ _.base_url }}/api/checkins"
-    description: "CT-CHECKIN-03 | Envio de check-in com arquivo .cpp (formato inválido)"
-    body:
-      mimeType: multipart/form-data
-      params:
-        - name: foto
-          type: file
-          fileName: arquivo_invalido.cpp
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_member }}"
-
-  - _id: req_enviar_foto
-    _type: request
-    name: enviar_foto
-    parentId: fld_modulo_checkin
-    method: POST
-    url: "{{ _.base_url }}/api/checkins"
-    description: "CT-CHECKIN-01 | Envio de check-in com imagem válida (.png)"
-    body:
-      mimeType: multipart/form-data
-      params:
-        - name: foto
-          type: file
-          fileName: checkin.png
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_member }}"
-
-  - _id: req_checar_checkin
-    _type: request
-    name: checar_checkin
-    parentId: fld_modulo_checkin
-    method: GET
-    url: "{{ _.base_url }}/api/checkins/"
-    description: "CT-CHECKIN-04 | Consulta dos check-ins do usuário autenticado"
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_member }}"
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_checar_checkin_outra_pessoa_sem_admin
-    _type: request
-    name: checar_checkin_outra_pessoa_sem_admin
-    parentId: fld_modulo_checkin
-    method: GET
-    url: "{{ _.base_url }}/api/checkins/ID_DO_CHECKIN_DE_OUTRO_USUARIO"
-    description: "CT-CHECKIN-05 | Acesso ao check-in de outro usuário sem permissão de admin (IDOR)"
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_member }}"
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_deletar_foto
-    _type: request
-    name: deletar_foto
-    parentId: fld_modulo_checkin
-    method: DELETE
-    url: "{{ _.base_url }}/api/checkins/ID_DO_CHECKIN_PROPRIO"
-    description: "CT-CHECKIN-06 | Remoção de check-in próprio"
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_member }}"
-      - name: Content-Type
-        value: application/json
-
-  - _id: req_deletar_foto_admin
-    _type: request
-    name: deletar_foto_admin
-    parentId: fld_modulo_checkin
-    method: DELETE
-    url: "{{ _.base_url }}/api/checkins/ID_DO_CHECKIN_DE_OUTRO_USUARIO"
-    description: "CT-CHECKIN-07 | Remoção de check-in por usuário ADMIN"
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_admin }}"
-      - name: Content-Type
-        value: application/json
-
-  # ============================================================
-  # FOLDER: pontuacoes
-  # ============================================================
-  - _id: fld_pontuacoes
-    _type: request_group
-    name: pontuacoes
-    parentId: wrk_nasalinha
-
-  - _id: req_checar_pontos
-    _type: request
-    name: checar_pontos
-    parentId: fld_pontuacoes
-    method: GET
-    url: "{{ _.base_url }}/api/rankings"
-    description: "CT-PONTOS-01 | Consulta do ranking de pontuação com usuário autenticado"
-    headers:
-      - name: Authorization
-        value: "Bearer {{ _.token_member }}"
-      - name: Content-Type
-        value: application/json
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: NaSalinha — QA Portfolio
+meta:
+  id: wrk_eb41105692f1498aadd7a453a035d96c
+  created: 1777914695594
+  modified: 1777914695594
+  description: ""
+collection:
+  - name: logins_cadastros
+    meta:
+      id: fld_f1a0fb4842cc425d9a577bebf2d6cb4a
+      created: 1777914695596
+      modified: 1777914695596
+      sortKey: -1777914695596
+      description: ""
+    children:
+      - name: teste-logins
+        meta:
+          id: fld_9504df9f875840c3814d6bf47602d82f
+          created: 1777914695597
+          modified: 1777914695597
+          sortKey: -1777914695597
+          description: ""
+        children:
+          - url: "{{ _.base_url }}/api/auth/login"
+            name: login-usuario
+            meta:
+              id: req_e039200dd5054b6bb265237e4e15d9a2
+              created: 1777914695599
+              modified: 1777914695599
+              isPrivate: false
+              description: CT-AUTH-01 | Login válido com credenciais corretas
+              sortKey: -1777914695599
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "email": "carlosviniciusadmin@gmail.com",
+                  "password": "SenhaValida123!"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/login"
+            name: login-sem-criar-conta
+            meta:
+              id: req_e03237b356ed417da97a2135f7085e56
+              created: 1777914695600
+              modified: 1777914695600
+              isPrivate: false
+              description: CT-AUTH-03 | Login com e-mail inexistente no sistema
+              sortKey: -1777914695600
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "email": "naoexiste@gmail.com",
+                  "password": "SenhaQualquer123!"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/login"
+            name: login-usuario-invalido
+            meta:
+              id: req_a9d0932985f245bb9105f4f8dbfe9b89
+              created: 1777914695601
+              modified: 1777914695601
+              isPrivate: false
+              description: Login com usuário que não possui conta ativa
+              sortKey: -1777914695601
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "email": "usuarioinativo@gmail.com",
+                  "password": "SenhaValida123!"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/login"
+            name: login-senha-invalida
+            meta:
+              id: req_d87e3bc5bef34e768b489f410a0cbc34
+              created: 1777914695601
+              modified: 1777914695601
+              isPrivate: false
+              description: CT-AUTH-02 | Login com senha incorreta para usuário existente
+              sortKey: -1777914695601
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "email": "pedro@example.com",
+                  "password": "senha123Errada"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/login"
+            name: login-campos-vazios
+            meta:
+              id: req_768e3682edd94eaeb5df4cc4f36079f5
+              created: 1777914695602
+              modified: 1777914695602
+              isPrivate: false
+              description: CT-AUTH-04 | Login com e-mail e senha em branco
+              sortKey: -1777914695602
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "email": "",
+                  "password": ""
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/login"
+            name: login-faltando-senha
+            meta:
+              id: req_19f97f2d0c854fc5a230392ee0a9a1ab
+              created: 1777914695603
+              modified: 1777914695603
+              isPrivate: false
+              description: CT-AUTH-05 | Login sem o campo senha no body
+              sortKey: -1777914695603
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "email": "pedro@example.com"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/login"
+            name: login-faltando-email
+            meta:
+              id: req_edb040d15f40456ca3b481c230fb6eb0
+              created: 1777914695603
+              modified: 1777914695603
+              isPrivate: false
+              description: Login sem o campo e-mail no body
+              sortKey: -1777914695603
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "password": "SenhaValida123!"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/login"
+            name: login-formato-invalido-email
+            meta:
+              id: req_9428e9d9dac442d5b3c6aa5b69380150
+              created: 1777914695604
+              modified: 1777914695604
+              isPrivate: false
+              description: "CT-AUTH-06 | Login com e-mail sem formato válido (ex: 'pedro')"
+              sortKey: -1777914695604
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "email": "pedro",
+                  "password": "SenhaValida123!"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/login"
+            name: login-case-sensitive
+            meta:
+              id: req_f5f3b39e7fd247c29439470d88c76bef
+              created: 1777914695605
+              modified: 1777914695605
+              isPrivate: false
+              description: Login com e-mail e senha com variação de capitalização
+              sortKey: -1777914695605
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "email": "CARLOSVINICIUSADMIN@GMAIL.COM",
+                  "password": "SENHAVALIDA123!"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/login"
+            name: login-sql-injection
+            meta:
+              id: req_e8c8f41b8fe643febe43b71fac80a96c
+              created: 1777914695606
+              modified: 1777914695606
+              isPrivate: false
+              description: CT-AUTH-07 | Tentativa de SQL Injection no campo e-mail
+              sortKey: -1777914695606
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "email": "' OR 1=1 --",
+                  "password": "qualquercoisa"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/login"
+            name: login-varias-tentativas-erradas
+            meta:
+              id: req_b021a16870174dfaaf485f88eb966918
+              created: 1777914695607
+              modified: 1777914695607
+              isPrivate: false
+              description: Múltiplas tentativas de login com credenciais erradas (rate
+                limiting / lockout)
+              sortKey: -1777914695607
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "email": "pedro@example.com",
+                  "password": "senhaerrada"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+      - name: teste cadastros
+        meta:
+          id: fld_173d40bf3abb404ea3c9df7aee11f62d
+          created: 1777914695607
+          modified: 1777914695607
+          sortKey: -1777914695607
+          description: ""
+        children:
+          - url: "{{ _.base_url }}/api/auth/register"
+            name: cadastrar-usuario
+            meta:
+              id: req_d11d932d26124857929cbe17995ea4af
+              created: 1777914695608
+              modified: 1777932599461
+              isPrivate: false
+              description: CT-AUTH-08 | Cadastro válido com role ADMIN
+              sortKey: -1777914695608
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "name": "carlostrainee",
+                  "email": "carlostrainee@gmail.com",
+                  "password": "123456",
+                  "role": "TRAINEE"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/register"
+            name: cadastro-sem-email
+            meta:
+              id: req_1d3a81284bd247958f20294f6e4f337b
+              created: 1777914695609
+              modified: 1777914695609
+              isPrivate: false
+              description: Cadastro com campo e-mail vazio
+              sortKey: -1777914695609
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "name": "Teste Usuário",
+                  "email": "",
+                  "password": "SenhaValida123!",
+                  "role": "MEMBER"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/register"
+            name: cadastro-sem-nome
+            meta:
+              id: req_8e1a7e68c85e4037ba555119adbdd771
+              created: 1777914695609
+              modified: 1777914695609
+              isPrivate: false
+              description: CT-AUTH-10 | Cadastro com campo nome vazio
+              sortKey: -1777914695609
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "name": "",
+                  "email": "teste@gmail.com",
+                  "password": "SenhaValida123!",
+                  "role": "MEMBER"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/register"
+            name: cadastro-ja-cadastrado
+            meta:
+              id: req_056084e1742d4ffba9997cfae68ef6c6
+              created: 1777914695610
+              modified: 1777914695610
+              isPrivate: false
+              description: CT-AUTH-09 | Cadastro com e-mail já existente no sistema
+              sortKey: -1777914695610
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "name": "Bruno",
+                  "email": "bruno@gmail.com",
+                  "password": "SenhaValida123!",
+                  "role": "MEMBER"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/register"
+            name: cadastro-senha-fraca
+            meta:
+              id: req_0ea6f09b66ee490e93b0da19cabe5e26
+              created: 1777914695610
+              modified: 1777914695610
+              isPrivate: false
+              description: CT-AUTH-11 | Cadastro com senha curta/fraca
+              sortKey: -1777914695610
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "name": "Teste Fraco",
+                  "email": "senhafraca@gmail.com",
+                  "password": "123",
+                  "role": "MEMBER"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/register"
+            name: cadastro-faltando-role-conta-nao-existe
+            meta:
+              id: req_407be5d0bc044ddbb77e4f06e23159cd
+              created: 1777914695611
+              modified: 1777914695611
+              isPrivate: false
+              description: CT-AUTH-12 | Cadastro sem campo role para conta nova
+              sortKey: -1777914695611
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "name": "Sem Role",
+                  "email": "semrole@gmail.com",
+                  "password": "SenhaValida123!"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/register"
+            name: cadastro-faltando-role-conta-ja-existe
+            meta:
+              id: req_54ec424cae8b483ea3dad9590eb63ae5
+              created: 1777914695611
+              modified: 1777914695611
+              isPrivate: false
+              description: Cadastro sem campo role para conta já existente
+              sortKey: -1777914695611
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "name": "Bruno",
+                  "email": "bruno@gmail.com",
+                  "password": "SenhaValida123!"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/register"
+            name: cadastro-com-role-inexistente
+            meta:
+              id: req_fbb4640c79d74403b9e116bafc92bd72
+              created: 1777914695612
+              modified: 1777914695612
+              isPrivate: false
+              description: CT-AUTH-13 | Cadastro com role inválida ('PRESIDENTE')
+              sortKey: -1777914695612
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "name": "Teste Role Inválida",
+                  "email": "roleinvalida@gmail.com",
+                  "password": "SenhaValida123!",
+                  "role": "PRESIDENTE"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/register"
+            name: cadastro-com-string-espacada
+            meta:
+              id: req_1a0e484ccfab4099b47a046c199d90a6
+              created: 1777914695613
+              modified: 1777914695613
+              isPrivate: false
+              description: CT-AUTH-14 | Cadastro com espaços nos campos nome, e-mail e senha
+              sortKey: -1777914695613
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "name": "   Carlos   ",
+                  "email": "   carlos@gmail.com   ",
+                  "password": "   SenhaValida123!   ",
+                  "role": "MEMBER"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+          - url: "{{ _.base_url }}/api/auth/register"
+            name: cadastro-com-email-e-role-espacado
+            meta:
+              id: req_77ab2146509a44008f73755b2740b69d
+              created: 1777914695614
+              modified: 1777914695614
+              isPrivate: false
+              description: CT-AUTH-14 | Cadastro com espaços no e-mail e na role
+              sortKey: -1777914695614
+            method: POST
+            body:
+              mimeType: application/json
+              text: |
+                {
+                  "name": "Teste Espaço",
+                  "email": "   espacado@gmail.com   ",
+                  "password": "SenhaValida123!",
+                  "role": "   MEMBER   "
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+  - name: esqueceu_senha
+    meta:
+      id: fld_e5597dc77ada4414a752f6caa7c80949
+      created: 1777914695614
+      modified: 1777914695614
+      sortKey: -1777914695614
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/api/auth/forgot-password"
+        name: email_existe
+        meta:
+          id: req_355943567f204792b00856fca4b8b2f5
+          created: 1777914695615
+          modified: 1777914695615
+          isPrivate: false
+          description: Recuperação de senha com e-mail cadastrado
+          sortKey: -1777914695615
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "email": "carlosviniciusadmin@gmail.com"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/auth/forgot-password"
+        name: email_nao_existe
+        meta:
+          id: req_fd9fed7f404f4382b57130e79c978ef3
+          created: 1777914695615
+          modified: 1777914695615
+          isPrivate: false
+          description: CT-AUTH-15 | Recuperação de senha com e-mail inexistente
+          sortKey: -1777914695615
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "email": "carlosviniciusNAOEXISTE@gmail.com"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/auth/forgot-password"
+        name: email_vazio
+        meta:
+          id: req_8c7bb31913214decab706c596df2c807
+          created: 1777914695616
+          modified: 1777914695616
+          isPrivate: false
+          description: Recuperação de senha com campo e-mail vazio
+          sortKey: -1777914695616
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "email": ""
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: admin
+    meta:
+      id: fld_8e821652a4634a0a87cabb263f093497
+      created: 1777914695616
+      modified: 1777914695616
+      sortKey: -1777914695616
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/api/seasons"
+        name: logando_sem_ser_admin
+        meta:
+          id: req_a58fb0b9a9744bb392d6d7490e4ced67
+          created: 1777914695617
+          modified: 1777914695617
+          isPrivate: false
+          description: CT-AUTH-16 | Acesso a rota restrita com token de usuário não-admin
+          sortKey: -1777914695617
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_member }}
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/checkins/:id"
+        name: atualizar_nota
+        meta:
+          id: req_7effd4929cc44e9eb3787d9d9edfc1af
+          created: 1777914695618
+          modified: 1777914695618
+          isPrivate: false
+          description: CT-CHECKIN-08 | Tentativa de alteração de status de check-in
+          sortKey: -1777914695618
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "status": "APPROVED"
+            }
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_admin }}
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: get_api
+    meta:
+      id: fld_a764b0f243c849408f245d4bf91a311f
+      created: 1777914695618
+      modified: 1777914695618
+      sortKey: -1777914695618
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/api/users"
+        name: check_senha_hash
+        meta:
+          id: req_deaf171365914727bb1fe39804aa64c7
+          created: 1777914695619
+          modified: 1777914695619
+          isPrivate: false
+          description: CT-AUTH-18 | Verificação se senha aparece hasheada na resposta da API
+          sortKey: -1777914695619
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_admin }}
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/users"
+        name: acessar_api_sendo_member
+        meta:
+          id: req_fdd2f929dd14411591a786046da6b778
+          created: 1777914695619
+          modified: 1777914695619
+          isPrivate: false
+          description: CT-AUTH-17 | Acesso ao endpoint de usuários com role MEMBER
+          sortKey: -1777914695619
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_member }}
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/checkins"
+        name: get_checkins
+        meta:
+          id: req_682748a1ade4463f86a031d951910b28
+          created: 1777914695620
+          modified: 1777932698125
+          isPrivate: false
+          description: Listagem de todos os check-ins com token de ADMIN
+          sortKey: -1777914695620
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_admin }}
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/seasons"
+        name: get_seasons_sendo_member
+        meta:
+          id: req_cf9f1820e4c74c82ba92ddee9a32b389
+          created: 1777914695621
+          modified: 1777914695621
+          isPrivate: false
+          description: CT-AUTH-16 | Acesso ao endpoint de seasons com role MEMBER
+          sortKey: -1777914695621
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_member }}
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: modulo-checkin
+    meta:
+      id: fld_f358cf5d91c64db0bbc431a9d7c173d6
+      created: 1777914695621
+      modified: 1777914695621
+      sortKey: -1777914695621
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/api/checkins"
+        name: enviar_sem_foto
+        meta:
+          id: req_c6b9fefc008c48898d7600a05a1e75e3
+          created: 1777914695622
+          modified: 1777914695622
+          isPrivate: false
+          description: CT-CHECKIN-02 | Envio de check-in sem arquivo anexado
+          sortKey: -1777914695622
+        method: POST
+        body:
+          mimeType: multipart/form-data
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_member }}
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/checkins"
+        name: enviar_formato_incorreto
+        meta:
+          id: req_2201576dbaf04d1eb9e3d549092f83e4
+          created: 1777914695623
+          modified: 1777914695623
+          isPrivate: false
+          description: CT-CHECKIN-03 | Envio de check-in com arquivo .cpp (formato inválido)
+          sortKey: -1777914695623
+        method: POST
+        body:
+          mimeType: multipart/form-data
+          params:
+            - name: foto
+              fileName: arquivo_invalido.cpp
+              type: file
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_member }}
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/checkins"
+        name: enviar_foto
+        meta:
+          id: req_e95e800d34104f8699838c3071b6a721
+          created: 1777914695623
+          modified: 1777919264885
+          isPrivate: false
+          description: CT-CHECKIN-01 | Envio de check-in com imagem válida (.png)
+          sortKey: -1777914695623
+        method: POST
+        body:
+          mimeType: multipart/form-data
+          params:
+            - name: photo
+              fileName: /run/user/1000/doc/455c7b5e/cachorro.jpg
+              type: file
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_admin }}
+        authentication:
+          type: none
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/checkins/"
+        name: checar_checkin
+        meta:
+          id: req_ea8e43d150a5449ab22265b7156fa5ac
+          created: 1777914695624
+          modified: 1777914695624
+          isPrivate: false
+          description: CT-CHECKIN-04 | Consulta dos check-ins do usuário autenticado
+          sortKey: -1777914695624
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_member }}
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/checkins/ID_DO_CHECKIN_DE_OUTRO_USUARIO"
+        name: checar_checkin_outra_pessoa_sem_admin
+        meta:
+          id: req_8d284cf14d594024a6cd09f945543db5
+          created: 1777914695625
+          modified: 1777914695625
+          isPrivate: false
+          description: CT-CHECKIN-05 | Acesso ao check-in de outro usuário sem permissão
+            de admin (IDOR)
+          sortKey: -1777914695625
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_member }}
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/checkins/ID_DO_CHECKIN_DE_OUTRO_USUARIO"
+        name: deletar_foto_admin
+        meta:
+          id: req_06431ec841234675843cbfaa76277185
+          created: 1777914695626
+          modified: 1777914802528
+          isPrivate: false
+          description: CT-CHECKIN-07 | Remoção de check-in por usuário ADMIN
+          sortKey: -1777914695626
+        method: DELETE
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_admin }}
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/checkins/ID_DO_CHECKIN_PROPRIO"
+        name: deletar_foto
+        meta:
+          id: req_f99214b4ac264a8f8b07f23c74b17a2c
+          created: 1777914695626
+          modified: 1777914695626
+          isPrivate: false
+          description: CT-CHECKIN-06 | Remoção de check-in próprio
+          sortKey: -1777914695626
+        method: DELETE
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_member }}
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: pontuacoes
+    meta:
+      id: fld_87ea84f519c945959338b891571f3fc7
+      created: 1777914695627
+      modified: 1777914695627
+      sortKey: -1777914695627
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/api/rankings"
+        name: checar_pontos
+        meta:
+          id: req_a35d7b0fe0f24daeb04fd585269413ae
+          created: 1777914695627
+          modified: 1777914695627
+          isPrivate: false
+          description: CT-PONTOS-01 | Consulta do ranking de pontuação com usuário
+            autenticado
+          sortKey: -1777914695627
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Authorization
+            value: Bearer {{ _.token_member }}
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: crud_seasons
+    meta:
+      id: fld_008ff1c8527a4407adea3e551937b4e3
+      created: 1777932769381
+      modified: 1777932769381
+      sortKey: -1777932769381
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/api/seasons"
+        name: criar_season_sendo_admin
+        meta:
+          id: req_b9cd00f43c414aecbff78b17c2dedc1e
+          created: 1777932928846
+          modified: 1777935207599
+          isPrivate: false
+          description: ""
+          sortKey: -1777923735124.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id": "UUID",
+              "name": "ME DELETE",
+              "description": "string",
+              "startDate": "01 04 2026",
+              "endDate": "03 04 2026",
+              "isActive": "true",
+              "pointsPerCheckIn": "10",
+              "createdAt": "",
+              "updatedAt": ""
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+          - name: Authorization
+            value: Bearer {{ _.token_admin }}
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/seasons/d079c600-abab-4b25-a4bb-28bc56c35d7f"
+        name: get_season_especifica
+        meta:
+          id: req_89cf410927184824b40f7e450d57e41c
+          created: 1777933038640
+          modified: 1777933076145
+          isPrivate: false
+          description: ""
+          sortKey: -1777933038640
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+          - name: Authorization
+            value: Bearer {{ _.token_member }}
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/seasons/4c318cbb-ff45-40c1-984b-4820882e16f2"
+        name: alterar_nome_season
+        meta:
+          id: req_7a87955d93fd42b897ea28f37bbf1883
+          created: 1777933120059
+          modified: 1777935127460
+          isPrivate: false
+          description: ""
+          sortKey: -1777932906631
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "XXXXXXXXXXXX"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+          - name: Authorization
+            value: Bearer {{ _.token_admin }}
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/seasons/b447348b-cd26-4247-8d1e-c62f79acb11c"
+        name: deletar_season_especifica_member
+        meta:
+          id: req_91463bba108d47c1ab018c882fe1a232
+          created: 1777933187917
+          modified: 1777935219198
+          isPrivate: false
+          description: ""
+          sortKey: -1777932972635.5
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+          - name: Authorization
+            value: Bearer {{ _.token_member }}
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/seasons/b447348b-cd26-4247-8d1e-c62f79acb11c"
+        name: deletar_season_especifica_admin
+        meta:
+          id: req_a0f21331fce2488fb1f8ee746d6f822c
+          created: 1777933192225
+          modified: 1777935231552
+          isPrivate: false
+          description: ""
+          sortKey: -1777932939633.25
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+          - name: Authorization
+            value: Bearer {{ _.token_admin }}
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url
+          }}/api/seasons/d079c600-abab-4b25-a4bb-28bc56c35d7f/toggle-active"
+        name: alterar_status_season
+        meta:
+          id: req_a6cbf748c9ad4d74a923e92dca8d0ebc
+          created: 1777934785150
+          modified: 1777934870637
+          isPrivate: false
+          description: ""
+          sortKey: -1777932840626.5
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Temporada Nome Alterado pela API"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+          - name: Authorization
+            value: Bearer {{ _.token_admin }}
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/api/seasons"
+        name: criar_season_sendo_membro
+        meta:
+          id: req_2de89ece1c994e4585dfc9b37056ef9f
+          created: 1777935277832
+          modified: 1777935287436
+          isPrivate: false
+          description: ""
+          sortKey: -1777919215375.75
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id": "UUID",
+              "name": "ME DELETE",
+              "description": "string",
+              "startDate": "01 04 2026",
+              "endDate": "03 04 2026",
+              "isActive": "true",
+              "pointsPerCheckIn": "10",
+              "createdAt": "",
+              "updatedAt": ""
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.5.0
+            description: ""
+            disabled: false
+          - name: Authorization
+            value: Bearer {{ _.token_member }}
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_4ef1b51b2b953ccaf741299ca9421101e1fa6cfe
+    created: 1777914695890
+    modified: 1777914695890
+environments:
+  name: Base Environment
+  meta:
+    id: env_e43f1e18bc864e019cd1c34c38cd1e13
+    created: 1777914695595
+    modified: 1777932660459
+    isPrivate: false
+  data:
+    base_url: http://localhost:5001
+    token_admin: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNGYyZDVkZS0zYmRlLTRjNjktODZlNC03YzkyYmE0MWFlZGUiLCJpYXQiOjE3Nzc5MzI2MzcsImV4cCI6MTc3NzkzNjIzN30.RCtviKCV06XzusMILBKj0IV-mPYQzdPY5GUZgx6MJuc
+    token_member: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiMDI2MWI3NS1iMDNjLTRhMzgtOGQwNS05ZjA5MzEyYzQ0YmEiLCJpYXQiOjE3Nzc5MzI1NzgsImV4cCI6MTc3NzkzNjE3OH0.u2_jbOAb3U10Q-A-ZKfviJYlXX7HVN57WURz2nyK7Og
+    token_trainee: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjOWZlMWVmZS1kNTAzLTQ1ZjAtOTI4My03MDQ3YmM2ZmJjOWMiLCJpYXQiOjE3Nzc5MzI2MDAsImV4cCI6MTc3NzkzNjIwMH0.s2zdz9yEndPEOSOIK2XM3C3U_Tf9bCaMS7LcH3uj3qA

@@ -772,89 +772,105 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Resultado Obtido | MEMBER não consegue deletar; ADMIN deleta com sucesso |
 | Status | PASS |
 
+#### CT-TEMPORADAS-08 — Envio de Check-in sem Temporada Ativa
 
+| Campo | Detalhe |
+|---|---|
+| Request | POST /api/checkins |
+| Pré-condição | Usuário autenticado + nenhuma temporada com `isActive = true` |
+| Tipo | API Validation |
+| Passos | 1. Garantir que todas as temporadas estejam inativas; 2. Tentar enviar um check-in com imagem; |
+| Resultado Esperado | A API deve rejeitar a requisição informando ausência de temporada ativa |
+| Resultado Obtido | A API retorna 400 Bad Request com mensagem "nenhuma temporada ativa" |
+| Status | PASS |
 
 ---
 
 ####
 
-# Bug Reports
-
+# Bug Reports — Resumo
 
 ## Resumo
 
-| #  | Título                                                                 | Área                 | Severidade | Status |
-|----|------------------------------------------------------------------------|----------------------|------------|--------|
-| #1  | Cadastro permite autenticação sem verificação de e-mail              | Auth JWT             | Maior      | Aberto |
-| #2  | Usuário não administrador acessa endpoint restrito                    | Auth JWT             | Maior      | Aberto |
-| #3  | Sistema permite múltiplos check-ins por dia                           | Check-in / Pontos    | Maior      | Aberto |
-| #4  | Check-ins criados com status APPROVED em vez de PENDENTE             | Check-in / Pontos    | Maior      | Aberto |
-| #5  | Endpoint de moderação de status inexistente                           | Check-in             | Maior      | Aberto |
-| #6  | IDOR: usuário acessa check-ins de outros usuários                     | Check-in             | Maior      | Aberto |
-| #7  | Código de configuração de upload em disco não utilizado               | Check-in             | Menor      | Aberto |
-| #8  | Remoção de check-in não atualiza pontos nem contagem                  | Pontos               | Maior      | Aberto |
-| #9  | Sistema não respeita intervalo mínimo de 24h entre check-ins          | Check-in             | Maior      | Aberto |
-| #10 | Ranking de usuários visível apenas para administradores               | Ranking / Auth / Visual     | Maior      | Aberto |
-| #11 | Sistema de pontos não decrementa                                       | Pontos  / Visual              | Maior      | Aberto |
+| #   | Título                                                              | Área                        | Severidade | Status |
+|-----|---------------------------------------------------------------------|-----------------------------|------------|--------|
+| #1  | Cadastro permite autenticação sem verificação de e-mail             | Auth JWT                    | Maior      | Aberto |
+| #2  | Usuário não administrador acessa endpoint restrito                  | Auth JWT                    | Maior      | Aberto |
+| #3  | Sistema permite múltiplos check-ins por dia                         | Check-in / Pontos           | Maior      | Aberto |
+| #4  | Check-ins criados com status APPROVED em vez de PENDENTE            | Check-in / Pontos           | Maior      | Aberto |
+| #5  | Endpoint de moderação de status inexistente                         | Check-in                    | Maior      | Aberto |
+| #6  | IDOR: usuário acessa check-ins de outros usuários                   | Check-in                    | Maior      | Aberto |
+| #7  | Código de configuração de upload em disco não utilizado             | Check-in                    | Menor      | Aberto |
+| #8  | Remoção de check-in não atualiza pontos nem contagem               | Pontos                      | Maior      | Aberto |
+| #9  | Sistema não respeita intervalo mínimo de 24h entre check-ins        | Check-in                    | Maior      | Aberto |
+| #10 | Ranking de usuários visível apenas para administradores             | Ranking / Auth / Visual     | Maior      | Aberto |
+| #11 | Sistema de pontos não decrementa                                     | Pontos / Visual             | Maior      | Aberto |
+| #15 | Frontend exibe múltiplas temporadas ativas simultaneamente          | Temporadas / Frontend       | Menor      | Aberto |
+| #16 | API aceita datas inválidas e converte para epoch (1970)             | Temporadas / Validação      | Maior      | Aberto |
 
 ---
 
-## Relatório de Testes Final
+# Relatório de Testes Final
 
 ---
 
-### Métricas de Execução
+## Métricas de Execução
+ 
+| Métrica                                    | Valor |
+|--------------------------------------------|-------|
+| Total de Casos de Teste Planejados         | 45    |
+| Total de Casos de Teste Executados         | 42    |
+| Pass                                       | 24    |
+| Fail                                       | 17    |
+| Indefinido                                 | 1     |
+| Aguardando correção                        | 3     |
+| Taxa de aprovação (sobre executados)       | 57%   |
 
-| Métrica | Valor |
-|---|---|
-| Total de Casos de Teste Planejados | 37 |
-| Total de Casos de Teste Executados | 34 |
-| Pass | 18  |
-| Fail | 15  |
-| Indefinido | 1 |
-| Aguardando correção | 3 |
-| Taxa de aprovação (sobre executados) | 53% |
 
-> Os  casos de regressão (CT-PONTOS-05, CT-CHECKIN-10, CT-AUTH-19) estão planejados mas aguardam correção dos bugs correspondentes para nova execução.
-
----
-
-### Distribuição de Severidade dos Bugs
-
-| Severidade | Quantidade | Issues |
-|------------|------------|--------|
-| Crítica    | 0          | 0      |
-| Maior      | 10         | #1, #2, #3, #4, #5, #6, #8, #9, #10, #11 |
-| Menor      | 1          | #7     |
-| Total      | 11         | 11     |
-
-### Análise por Área
-
-| Área | Casos Planejados | Pass | Fail | Indefinido | Aguardando correção | Bugs Críticos |
-|---|---|---|---|---|---|---|
-| Autenticação JWT | 19 | 15 | 2 | 1 | 1 | 2 |
-| Check-in por Foto | 10 | 2 | 7 | 0 | 1 | 5 |
-| Sistema de Pontos | 5 | 1 | 3 | 0 | 1 | 3 |
-> Alguns bugs impactam mais de uma área (ex: #3 e #4 afetam tanto Check-in quanto Pontos). Outros testes (como ad-hoc) não foram planejados e, por isso, não constam na tabela
+> Os casos de regressão (CT-PONTOS-05, CT-CHECKIN-10, CT-AUTH-19) estão planejados mas aguardam correção dos bugs correspondentes para nova execução.
 
 ---
 
-### Conclusão
+## Distribuição de Severidade dos Bugs
 
-O sistema NaSalinha apresenta falhas críticas em todas as três áreas core, sendo inapropriado para uso em produção no estado atual. Os principais riscos identificados são:
+| Severidade | Quantidade | Issues                                                         |
+|------------|------------|----------------------------------------------------------------|
+| Crítica    | 0          | —                                                              |
+| Maior      | 12         | #1, #2, #3, #4, #5, #6, #8, #9, #10, #11, #12, #16            |
+| Menor      | 2          | #7, #15                                                             |
+| **Total**  | **13**     | **13**                                                         |
+
+---
+
+## Análise por Área
+
+| Área               | Casos Planejados | Pass | Fail | Indefinido | Aguardando correção | Bugs Encontrados |
+|--------------------|------------------|------|------|------------|---------------------|------------------|
+| Autenticação JWT   | 19               | 15   | 2    | 1          | 1                   | 2                |
+| Check-in por Foto  | 10               | 2    | 7    | 0          | 1                   | 5                |
+| Sistema de Pontos  | 5                | 1    | 3    | 0          | 1                   | 3                |
+| Temporadas         | 8                | 6    | 2    | 0          | 0                   | 2                |
+| **Total**          | **42**           | **24** | **14** | **1**  | **3**               | **13**           |
+
+> Alguns bugs impactam mais de uma área (ex: #3 e #4 afetam tanto Check-in quanto Pontos). Testes ad-hoc (CT-FRONTEND-01, CT-FRONTEND-02, CT-CHECKIN-XX) não constam na tabela de planejados por não terem sido previstos originalmente.
+
+---
+
+## Conclusão
+
+O sistema NaSalinha apresenta falhas críticas em todas as áreas testadas, sendo inapropriado para uso em produção no estado atual. Os principais riscos identificados são:
 
 - **Segurança:** Ausência de verificação de e-mail no cadastro e vulnerabilidade IDOR permitem acesso indevido a dados e recursos de outros usuários
 - **Autorização:** Falha no RBAC expõe endpoints administrativos a qualquer usuário autenticado, independente de role
 - **Integridade de dados:** Pontos são atribuídos e mantidos incorretamente, comprometendo a confiabilidade do ranking
 - **Regras de negócio:** Restrições de frequência de check-in e fluxo de moderação não estão implementados no backend
+- **Temporadas:** Ausência de validação de datas e inconsistência entre frontend e backend comprometem a confiabilidade do gerenciamento de temporadas
 
 ---
 
 ## Próximos Passos
 
-- Acompanhar correção das issues críticas abertas (#1, #2, #3, #4, #5, #6, #8, #9)
-- Registrar resultados dos 6 casos marcados "A verificar"
-- Executar os 3 casos de regressão após as correções
-- Expandir cobertura para a área de Temporadas (CRUD completo)
-- Adicionar evidências 
-- Configurar GitHub Projects
+- Acompanhar correção das issues críticas abertas (#1, #2, #3, #4, #5, #6, #8, #9, #12, #13)
+- Registrar resultados do caso marcado como "Indefinido" (CT-AUTH-18)
+- Executar os 3 casos de regressão após as correções (CT-AUTH-19, CT-CHECKIN-10, CT-PONTOS-05)
+- Adicionar evidências (prints das respostas no Insomnia) às issues abertas
