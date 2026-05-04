@@ -48,7 +48,7 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 ## Como Executar os Testes
 
 1. Subir o ambiente local com Docker
-2. Importar o arquivo `Insomnia_2026-04-21.yaml` localizado em `/insomnia`
+2. Importar o arquivo `qa.yaml` localizado em `/insomnia`
 3. Executar os requests organizados pelas pastas: `logins_cadastros`, `esqueceu_senha`, `admin`, `get_api`, `modulo-checkin`, `pontuacoes`
 4. Validar as respostas conforme os resultados esperados descritos nos casos de teste abaixo
 

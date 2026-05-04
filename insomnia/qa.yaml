@@ -1,0 +1,728 @@
+_type: export
+__export_format: 4
+__export_date: 2026-04-21T00:00:00.000Z
+__export_source: insomnia.desktop.app:v2023.5.8
+resources:
+  # ============================================================
+  # WORKSPACE
+  # ============================================================
+  - _id: wrk_nasalinha
+    _type: workspace
+    name: NaSalinha — QA Portfolio
+    description: Auditoria completa de qualidade do sistema NaSalinha
+    scope: collection
+
+  # ============================================================
+  # ENVIRONMENT
+  # ============================================================
+  - _id: env_base
+    _type: environment
+    name: Base Environment
+    parentId: wrk_nasalinha
+    data:
+      base_url: http://localhost:3000
+      token_admin: ""
+      token_member: ""
+      token_trainee: ""
+
+  # ============================================================
+  # FOLDER: logins_cadastros
+  # ============================================================
+  - _id: fld_logins_cadastros
+    _type: request_group
+    name: logins_cadastros
+    parentId: wrk_nasalinha
+
+  # --- SUB-FOLDER: teste-logins ---
+  - _id: fld_teste_logins
+    _type: request_group
+    name: teste-logins
+    parentId: fld_logins_cadastros
+
+  - _id: req_login_usuario
+    _type: request
+    name: login-usuario
+    parentId: fld_teste_logins
+    method: POST
+    url: "{{ _.base_url }}/api/auth/login"
+    description: "CT-AUTH-01 | Login válido com credenciais corretas"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "carlosviniciusadmin@gmail.com",
+          "password": "SenhaValida123!"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_login_sem_criar_conta
+    _type: request
+    name: login-sem-criar-conta
+    parentId: fld_teste_logins
+    method: POST
+    url: "{{ _.base_url }}/api/auth/login"
+    description: "CT-AUTH-03 | Login com e-mail inexistente no sistema"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "naoexiste@gmail.com",
+          "password": "SenhaQualquer123!"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_login_usuario_invalido
+    _type: request
+    name: login-usuario-invalido
+    parentId: fld_teste_logins
+    method: POST
+    url: "{{ _.base_url }}/api/auth/login"
+    description: "Login com usuário que não possui conta ativa"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "usuarioinativo@gmail.com",
+          "password": "SenhaValida123!"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_login_senha_invalida
+    _type: request
+    name: login-senha-invalida
+    parentId: fld_teste_logins
+    method: POST
+    url: "{{ _.base_url }}/api/auth/login"
+    description: "CT-AUTH-02 | Login com senha incorreta para usuário existente"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "pedro@example.com",
+          "password": "senha123Errada"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_login_campos_vazios
+    _type: request
+    name: login-campos-vazios
+    parentId: fld_teste_logins
+    method: POST
+    url: "{{ _.base_url }}/api/auth/login"
+    description: "CT-AUTH-04 | Login com e-mail e senha em branco"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "",
+          "password": ""
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_login_faltando_senha
+    _type: request
+    name: login-faltando-senha
+    parentId: fld_teste_logins
+    method: POST
+    url: "{{ _.base_url }}/api/auth/login"
+    description: "CT-AUTH-05 | Login sem o campo senha no body"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "pedro@example.com"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_login_faltando_email
+    _type: request
+    name: login-faltando-email
+    parentId: fld_teste_logins
+    method: POST
+    url: "{{ _.base_url }}/api/auth/login"
+    description: "Login sem o campo e-mail no body"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "password": "SenhaValida123!"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_login_formato_invalido_email
+    _type: request
+    name: login-formato-invalido-email
+    parentId: fld_teste_logins
+    method: POST
+    url: "{{ _.base_url }}/api/auth/login"
+    description: "CT-AUTH-06 | Login com e-mail sem formato válido (ex: 'pedro')"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "pedro",
+          "password": "SenhaValida123!"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_login_case_sensitive
+    _type: request
+    name: login-case-sensitive
+    parentId: fld_teste_logins
+    method: POST
+    url: "{{ _.base_url }}/api/auth/login"
+    description: "Login com e-mail e senha com variação de capitalização"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "CARLOSVINICIUSADMIN@GMAIL.COM",
+          "password": "SENHAVALIDA123!"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_login_sql_injection
+    _type: request
+    name: login-sql-injection
+    parentId: fld_teste_logins
+    method: POST
+    url: "{{ _.base_url }}/api/auth/login"
+    description: "CT-AUTH-07 | Tentativa de SQL Injection no campo e-mail"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "' OR 1=1 --",
+          "password": "qualquercoisa"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_login_varias_tentativas_erradas
+    _type: request
+    name: login-varias-tentativas-erradas
+    parentId: fld_teste_logins
+    method: POST
+    url: "{{ _.base_url }}/api/auth/login"
+    description: "Múltiplas tentativas de login com credenciais erradas (rate limiting / lockout)"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "pedro@example.com",
+          "password": "senhaerrada"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  # --- SUB-FOLDER: teste cadastros ---
+  - _id: fld_teste_cadastros
+    _type: request_group
+    name: teste cadastros
+    parentId: fld_logins_cadastros
+
+  - _id: req_cadastrar_usuario
+    _type: request
+    name: cadastrar-usuario
+    parentId: fld_teste_cadastros
+    method: POST
+    url: "{{ _.base_url }}/api/auth/register"
+    description: "CT-AUTH-08 | Cadastro válido com role ADMIN"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "name": "Carlos Vinicius",
+          "email": "carlosviniciusadmin@gmail.com",
+          "password": "SenhaValida123!",
+          "role": "ADMIN"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_cadastro_sem_nome
+    _type: request
+    name: cadastro-sem-nome
+    parentId: fld_teste_cadastros
+    method: POST
+    url: "{{ _.base_url }}/api/auth/register"
+    description: "CT-AUTH-10 | Cadastro com campo nome vazio"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "name": "",
+          "email": "teste@gmail.com",
+          "password": "SenhaValida123!",
+          "role": "MEMBER"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_cadastro_sem_email
+    _type: request
+    name: cadastro-sem-email
+    parentId: fld_teste_cadastros
+    method: POST
+    url: "{{ _.base_url }}/api/auth/register"
+    description: "Cadastro com campo e-mail vazio"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "name": "Teste Usuário",
+          "email": "",
+          "password": "SenhaValida123!",
+          "role": "MEMBER"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_cadastro_ja_cadastrado
+    _type: request
+    name: cadastro-ja-cadastrado
+    parentId: fld_teste_cadastros
+    method: POST
+    url: "{{ _.base_url }}/api/auth/register"
+    description: "CT-AUTH-09 | Cadastro com e-mail já existente no sistema"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "name": "Bruno",
+          "email": "bruno@gmail.com",
+          "password": "SenhaValida123!",
+          "role": "MEMBER"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_cadastro_senha_fraca
+    _type: request
+    name: cadastro-senha-fraca
+    parentId: fld_teste_cadastros
+    method: POST
+    url: "{{ _.base_url }}/api/auth/register"
+    description: "CT-AUTH-11 | Cadastro com senha curta/fraca"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "name": "Teste Fraco",
+          "email": "senhafraca@gmail.com",
+          "password": "123",
+          "role": "MEMBER"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_cadastro_faltando_role_conta_ja_existe
+    _type: request
+    name: cadastro-faltando-role-conta-ja-existe
+    parentId: fld_teste_cadastros
+    method: POST
+    url: "{{ _.base_url }}/api/auth/register"
+    description: "Cadastro sem campo role para conta já existente"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "name": "Bruno",
+          "email": "bruno@gmail.com",
+          "password": "SenhaValida123!"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_cadastro_faltando_role_conta_nao_existe
+    _type: request
+    name: cadastro-faltando-role-conta-nao-existe
+    parentId: fld_teste_cadastros
+    method: POST
+    url: "{{ _.base_url }}/api/auth/register"
+    description: "CT-AUTH-12 | Cadastro sem campo role para conta nova"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "name": "Sem Role",
+          "email": "semrole@gmail.com",
+          "password": "SenhaValida123!"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_cadastro_com_role_inexistente
+    _type: request
+    name: cadastro-com-role-inexistente
+    parentId: fld_teste_cadastros
+    method: POST
+    url: "{{ _.base_url }}/api/auth/register"
+    description: "CT-AUTH-13 | Cadastro com role inválida ('PRESIDENTE')"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "name": "Teste Role Inválida",
+          "email": "roleinvalida@gmail.com",
+          "password": "SenhaValida123!",
+          "role": "PRESIDENTE"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_cadastro_com_string_espacada
+    _type: request
+    name: cadastro-com-string-espacada
+    parentId: fld_teste_cadastros
+    method: POST
+    url: "{{ _.base_url }}/api/auth/register"
+    description: "CT-AUTH-14 | Cadastro com espaços nos campos nome, e-mail e senha"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "name": "   Carlos   ",
+          "email": "   carlos@gmail.com   ",
+          "password": "   SenhaValida123!   ",
+          "role": "MEMBER"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_cadastro_com_email_e_role_espacado
+    _type: request
+    name: cadastro-com-email-e-role-espacado
+    parentId: fld_teste_cadastros
+    method: POST
+    url: "{{ _.base_url }}/api/auth/register"
+    description: "CT-AUTH-14 | Cadastro com espaços no e-mail e na role"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "name": "Teste Espaço",
+          "email": "   espacado@gmail.com   ",
+          "password": "SenhaValida123!",
+          "role": "   MEMBER   "
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  # ============================================================
+  # FOLDER: esqueceu_senha
+  # ============================================================
+  - _id: fld_esqueceu_senha
+    _type: request_group
+    name: esqueceu_senha
+    parentId: wrk_nasalinha
+
+  - _id: req_email_existe
+    _type: request
+    name: email_existe
+    parentId: fld_esqueceu_senha
+    method: POST
+    url: "{{ _.base_url }}/api/auth/forgot-password"
+    description: "Recuperação de senha com e-mail cadastrado"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "carlosviniciusadmin@gmail.com"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_email_nao_existe
+    _type: request
+    name: email_nao_existe
+    parentId: fld_esqueceu_senha
+    method: POST
+    url: "{{ _.base_url }}/api/auth/forgot-password"
+    description: "CT-AUTH-15 | Recuperação de senha com e-mail inexistente"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "carlosviniciusNAOEXISTE@gmail.com"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_email_vazio
+    _type: request
+    name: email_vazio
+    parentId: fld_esqueceu_senha
+    method: POST
+    url: "{{ _.base_url }}/api/auth/forgot-password"
+    description: "Recuperação de senha com campo e-mail vazio"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": ""
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+
+  # ============================================================
+  # FOLDER: admin
+  # ============================================================
+  - _id: fld_admin
+    _type: request_group
+    name: admin
+    parentId: wrk_nasalinha
+
+  - _id: req_logando_sem_ser_admin
+    _type: request
+    name: logando_sem_ser_admin
+    parentId: fld_admin
+    method: GET
+    url: "{{ _.base_url }}/api/seasons"
+    description: "CT-AUTH-16 | Acesso a rota restrita com token de usuário não-admin"
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_member }}"
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_atualizar_nota
+    _type: request
+    name: atualizar_nota
+    parentId: fld_admin
+    method: PATCH
+    url: "{{ _.base_url }}/checkins/:id"
+    description: "CT-CHECKIN-08 | Tentativa de alteração de status de check-in"
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "status": "APPROVED"
+        }
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_admin }}"
+      - name: Content-Type
+        value: application/json
+
+  # ============================================================
+  # FOLDER: get_api
+  # ============================================================
+  - _id: fld_get_api
+    _type: request_group
+    name: get_api
+    parentId: wrk_nasalinha
+
+  - _id: req_acessar_api_sendo_member
+    _type: request
+    name: acessar_api_sendo_member
+    parentId: fld_get_api
+    method: GET
+    url: "{{ _.base_url }}/api/users"
+    description: "CT-AUTH-17 | Acesso ao endpoint de usuários com role MEMBER"
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_member }}"
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_check_senha_hash
+    _type: request
+    name: check_senha_hash
+    parentId: fld_get_api
+    method: GET
+    url: "{{ _.base_url }}/api/users"
+    description: "CT-AUTH-18 | Verificação se senha aparece hasheada na resposta da API"
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_admin }}"
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_get_checkins
+    _type: request
+    name: get_checkins
+    parentId: fld_get_api
+    method: GET
+    url: "{{ _.base_url }}/api/checkins"
+    description: "Listagem de todos os check-ins com token de ADMIN"
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_admin }}"
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_get_seasons_sendo_member
+    _type: request
+    name: get_seasons_sendo_member
+    parentId: fld_get_api
+    method: GET
+    url: "{{ _.base_url }}/api/seasons"
+    description: "CT-AUTH-16 | Acesso ao endpoint de seasons com role MEMBER"
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_member }}"
+      - name: Content-Type
+        value: application/json
+
+  # ============================================================
+  # FOLDER: modulo-checkin
+  # ============================================================
+  - _id: fld_modulo_checkin
+    _type: request_group
+    name: modulo-checkin
+    parentId: wrk_nasalinha
+
+  - _id: req_enviar_sem_foto
+    _type: request
+    name: enviar_sem_foto
+    parentId: fld_modulo_checkin
+    method: POST
+    url: "{{ _.base_url }}/api/checkins"
+    description: "CT-CHECKIN-02 | Envio de check-in sem arquivo anexado"
+    body:
+      mimeType: multipart/form-data
+      params: []
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_member }}"
+
+  - _id: req_enviar_formato_incorreto
+    _type: request
+    name: enviar_formato_incorreto
+    parentId: fld_modulo_checkin
+    method: POST
+    url: "{{ _.base_url }}/api/checkins"
+    description: "CT-CHECKIN-03 | Envio de check-in com arquivo .cpp (formato inválido)"
+    body:
+      mimeType: multipart/form-data
+      params:
+        - name: foto
+          type: file
+          fileName: arquivo_invalido.cpp
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_member }}"
+
+  - _id: req_enviar_foto
+    _type: request
+    name: enviar_foto
+    parentId: fld_modulo_checkin
+    method: POST
+    url: "{{ _.base_url }}/api/checkins"
+    description: "CT-CHECKIN-01 | Envio de check-in com imagem válida (.png)"
+    body:
+      mimeType: multipart/form-data
+      params:
+        - name: foto
+          type: file
+          fileName: checkin.png
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_member }}"
+
+  - _id: req_checar_checkin
+    _type: request
+    name: checar_checkin
+    parentId: fld_modulo_checkin
+    method: GET
+    url: "{{ _.base_url }}/api/checkins/"
+    description: "CT-CHECKIN-04 | Consulta dos check-ins do usuário autenticado"
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_member }}"
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_checar_checkin_outra_pessoa_sem_admin
+    _type: request
+    name: checar_checkin_outra_pessoa_sem_admin
+    parentId: fld_modulo_checkin
+    method: GET
+    url: "{{ _.base_url }}/api/checkins/ID_DO_CHECKIN_DE_OUTRO_USUARIO"
+    description: "CT-CHECKIN-05 | Acesso ao check-in de outro usuário sem permissão de admin (IDOR)"
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_member }}"
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_deletar_foto
+    _type: request
+    name: deletar_foto
+    parentId: fld_modulo_checkin
+    method: DELETE
+    url: "{{ _.base_url }}/api/checkins/ID_DO_CHECKIN_PROPRIO"
+    description: "CT-CHECKIN-06 | Remoção de check-in próprio"
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_member }}"
+      - name: Content-Type
+        value: application/json
+
+  - _id: req_deletar_foto_admin
+    _type: request
+    name: deletar_foto_admin
+    parentId: fld_modulo_checkin
+    method: DELETE
+    url: "{{ _.base_url }}/api/checkins/ID_DO_CHECKIN_DE_OUTRO_USUARIO"
+    description: "CT-CHECKIN-07 | Remoção de check-in por usuário ADMIN"
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_admin }}"
+      - name: Content-Type
+        value: application/json
+
+  # ============================================================
+  # FOLDER: pontuacoes
+  # ============================================================
+  - _id: fld_pontuacoes
+    _type: request_group
+    name: pontuacoes
+    parentId: wrk_nasalinha
+
+  - _id: req_checar_pontos
+    _type: request
+    name: checar_pontos
+    parentId: fld_pontuacoes
+    method: GET
+    url: "{{ _.base_url }}/api/rankings"
+    description: "CT-PONTOS-01 | Consulta do ranking de pontuação com usuário autenticado"
+    headers:
+      - name: Authorization
+        value: "Bearer {{ _.token_member }}"
+      - name: Content-Type
+        value: application/json
