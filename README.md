@@ -39,6 +39,7 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 ```
 /
 ├── README.md → Este documento (documentação completa)
+├── /docs - Documentos auxiliares de report
 └── /insomnia → Coleção exportada com todos os testes de API
 ```
 
