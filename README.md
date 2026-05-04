@@ -674,6 +674,110 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 
 ---
 
+### Área 5 - Bugs envolvendo temporadas
+
+##### CT-TEMPORADAS-01 — Inconsistência entre Frontend e Backend (Temporada Ativa)
+
+| Campo | Detalhe |
+|---|---|
+| Request | GET /api/seasons + POST /api/checkins |
+| Pré-condição | Usuário autenticado + existência de múltiplas temporadas criadas via API com `isActive = true` |
+| Tipo | Frontend + API inconsistency |
+| Passos | 1. Criar uma temporada com `isActive: true`; 2. Criar uma segunda temporada também com `isActive: true`; 3. Acessar a tela de gerenciamento de temporadas; 4. Observar quais temporadas estão marcadas como ativas; 5. Realizar um envio de check-in |
+| Resultado Esperado | Apenas uma temporada deve ser exibida e considerada como ativa, respeitando a regra de negócio |
+| Resultado Obtido | O frontend exibe múltiplas temporadas como ativas simultaneamente, porém o backend considera apenas a última criada como válida para operações (ex: check-in) |
+| Status | FAIL |
+| Bug Report | #xx |
+
+---
+
+#### CT-TEMPORADAS-02 — Falha de Validação de Data (Fallback para Epoch 1970)
+
+| Campo | Detalhe |
+|---|---|
+| Request | POST /api/seasons |
+| Pré-condição | Usuário autenticado |
+| Tipo | API Validation |
+| Passos | 1. Enviar requisição de criação de temporada com `startDate` e `endDate` em formato inválido (ex: "22022026"); 2. Observar resposta da API; |
+| Resultado Esperado | A API deve rejeitar a requisição com erro de validação (ex: 400 Bad Request), informando formato de data inválido |
+| Resultado Obtido | A API aceita a requisição e converte automaticamente a data inválida para valores próximos ao epoch (1970-01-01), criando dados incorretos |
+| Status | FAIL |
+| Bug Report | #xx |
+
+#### CT-TEMPORADAS-03 — Criação de Temporada (ADMIN vs MEMBER)
+
+| Campo | Detalhe |
+|---|---|
+| Request | POST /api/seasons |
+| Pré-condição | Usuário autenticado (ADMIN e MEMBER) |
+| Tipo | API Authorization |
+| Passos | 1. Realizar requisição como ADMIN para criar temporada; 2. Repetir a mesma requisição como MEMBER; |
+| Resultado Esperado | ADMIN deve conseguir criar temporada; MEMBER não deve ter permissão |
+| Resultado Obtido | ADMIN cria com sucesso (201 Created); MEMBER não consegue criar |
+| Status | PASS |
+
+---
+
+#### CT-TEMPORADAS-04 — Leitura de Temporada Específica
+
+| Campo | Detalhe |
+|---|---|
+| Request | GET /api/seasons/{id} |
+| Pré-condição | Usuário autenticado + existência de uma temporada |
+| Tipo | API |
+| Passos | 1. Criar uma temporada; 2. Buscar pelo ID; |
+| Resultado Esperado | A API deve retornar os dados corretos da temporada |
+| Resultado Obtido | A API retorna corretamente os dados da temporada |
+| Status | PASS |
+
+---
+
+#### CT-TEMPORADAS-05 — Atualização de Nome da Temporada (PUT)
+
+| Campo | Detalhe |
+|---|---|
+| Request | PUT /api/seasons/{id} |
+| Pré-condição | Usuário autenticado (ADMIN) + temporada existente |
+| Tipo | API |
+| Passos | 1. Criar uma temporada; 2. Atualizar o nome via PUT; 3. Consultar temporada; |
+| Resultado Esperado | O nome da temporada deve ser atualizado corretamente |
+| Resultado Obtido | Atualização realizada com sucesso via PUT |
+| Status | PASS |
+
+---
+
+#### CT-TEMPORADAS-06 — Atualização de Status da Temporada (PATCH)
+
+| Campo | Detalhe |
+|---|---|
+| Request | PATCH /api/seasons/{id} |
+| Pré-condição | Usuário autenticado (ADMIN) + temporada existente |
+| Tipo | API |
+| Passos | 1. Criar uma temporada; 2. Alterar `isActive` via PATCH; 3. Consultar temporada; |
+| Resultado Esperado | O status da temporada deve ser atualizado corretamente |
+| Resultado Obtido | Atualização realizada com sucesso via PATCH |
+| Status | PASS |
+
+---
+
+#### CT-TEMPORADAS-07 — Deleção de Temporada (ADMIN vs MEMBER)
+
+| Campo | Detalhe |
+|---|---|
+| Request | DELETE /api/seasons/{id} |
+| Pré-condição | Usuário autenticado (ADMIN e MEMBER) + temporada existente |
+| Tipo | API Authorization |
+| Passos | 1. Criar uma temporada; 2. Tentar deletar como MEMBER; 3. Tentar deletar como ADMIN; |
+| Resultado Esperado | MEMBER não deve conseguir deletar; ADMIN deve conseguir |
+| Resultado Obtido | MEMBER não consegue deletar; ADMIN deleta com sucesso |
+| Status | PASS |
+
+
+
+---
+
+####
+
 # Bug Reports
 
 
