@@ -68,7 +68,7 @@ A documentação dos casos de teste detalhada consta no documento `NaSalinha_Cas
 
 --- 
 
-# Bug Reports — Resumo
+## Bug Reports — Resumo
 
 
 | #   | Título                                                              | Área                        | Severidade | Status |
@@ -91,11 +91,11 @@ As issues #12, #13, #14 apresentam um resumo breve de cada área principal, não
 
 ---
 
-# Relatório de Testes Final
+## Relatório de Testes Final
 
 ---
 
-## Métricas de Execução
+### Métricas de Execução
  
 | Métrica                                    | Valor |
 |--------------------------------------------|-------|
@@ -112,7 +112,7 @@ As issues #12, #13, #14 apresentam um resumo breve de cada área principal, não
 
 ---
 
-## Distribuição de Severidade dos Bugs
+### Distribuição de Severidade dos Bugs
 
 | Severidade | Quantidade | Issues                                                         |
 |------------|------------|----------------------------------------------------------------|
@@ -123,7 +123,7 @@ As issues #12, #13, #14 apresentam um resumo breve de cada área principal, não
 
 ---
 
-## Análise por Área
+### Análise por Área
 
 | Área               | Casos Planejados | Pass | Fail | Indefinido | Aguardando correção | Bugs Encontrados |
 |--------------------|------------------|------|------|------------|---------------------|------------------|
@@ -138,7 +138,7 @@ As issues #12, #13, #14 apresentam um resumo breve de cada área principal, não
 
 ---
 
-## Conclusão
+### Conclusão
 
 O sistema NaSalinha apresenta falhas críticas em todas as áreas testadas, sendo inapropriado para uso em produção no estado atual. Os principais riscos identificados são:
 
