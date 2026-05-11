@@ -582,8 +582,8 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Pré-condição | Usuário autenticado com token JWT válido |
 | Tipo | API |
 | Passos | 1. GET /api/rankings com token JWT |
-| Resultado Esperado | 200 OK com lista de usuários ordenada por pontuação (crescente)|
-| Resultado Obtido | 200 OK com lista de usuários ordenada por pontuação (crescente) |
+| Resultado Esperado | 200 OK com lista de usuários ordenada por pontuação (decrescente)|
+| Resultado Obtido | 200 OK com lista de usuários ordenada por pontuação (decrescente) |
 | Status | PASS |
 
 ---
@@ -687,7 +687,7 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Resultado Esperado | Apenas uma temporada deve ser exibida e considerada como ativa, respeitando a regra de negócio |
 | Resultado Obtido | O frontend exibe múltiplas temporadas como ativas simultaneamente, porém o backend considera apenas a última criada como válida para operações (ex: check-in) |
 | Status | FAIL |
-| Bug Report | #xx |
+| Bug Report | #15 |
 
 ---
 
@@ -702,7 +702,7 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Resultado Esperado | A API deve rejeitar a requisição com erro de validação (ex: 400 Bad Request), informando formato de data inválido |
 | Resultado Obtido | A API aceita a requisição e converte automaticamente a data inválida para valores próximos ao epoch (1970-01-01), criando dados incorretos |
 | Status | FAIL |
-| Bug Report | #xx |
+| Bug Report | #16 |
 
 #### CT-TEMPORADAS-03 — Criação de Temporada (ADMIN vs MEMBER)
 
@@ -790,7 +790,6 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 
 # Bug Reports — Resumo
 
-## Resumo
 
 | #   | Título                                                              | Área                        | Severidade | Status |
 |-----|---------------------------------------------------------------------|-----------------------------|------------|--------|
@@ -803,7 +802,7 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | #7  | Código de configuração de upload em disco não utilizado             | Check-in                    | Menor      | Aberto |
 | #8  | Remoção de check-in não atualiza pontos nem contagem               | Pontos                      | Maior      | Aberto |
 | #9  | Sistema não respeita intervalo mínimo de 24h entre check-ins        | Check-in                    | Maior      | Aberto |
-| #10 | Ranking de usuários visível apenas para administradores             | Ranking / Auth / Visual     | Maior      | Aberto |
+| #10 | Ranking de usuários visível apenas para administradores             | Ranking / Visual            | Maior      | Aberto |
 | #11 | Sistema de pontos não decrementa                                     | Pontos / Visual             | Maior      | Aberto |
 | #15 | Frontend exibe múltiplas temporadas ativas simultaneamente          | Temporadas / Frontend       | Menor      | Aberto |
 | #16 | API aceita datas inválidas e converte para epoch (1970)             | Temporadas / Validação      | Maior      | Aberto |
@@ -838,7 +837,7 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Crítica    | 0          | —                                                              |
 | Maior      | 12         | #1, #2, #3, #4, #5, #6, #8, #9, #10, #11, #12, #16            |
 | Menor      | 2          | #7, #15                                                             |
-| **Total**  | **13**     | **13**                                                         |
+| **Total**  | **14**     | **14**                                                         |
 
 ---
 
@@ -847,10 +846,11 @@ O trabalho segue o ciclo completo de QA: planejamento de casos de teste, execuç
 | Área               | Casos Planejados | Pass | Fail | Indefinido | Aguardando correção | Bugs Encontrados |
 |--------------------|------------------|------|------|------------|---------------------|------------------|
 | Autenticação JWT   | 19               | 15   | 2    | 1          | 1                   | 2                |
-| Check-in por Foto  | 10               | 2    | 7    | 0          | 1                   | 5                |
+| Check-in por Foto  | 10               | 2    | 8    | 0          | 1                   | 5                |
 | Sistema de Pontos  | 5                | 1    | 3    | 0          | 1                   | 3                |
+| Frontend           | 2                | 0    | 2    | 0          | 0                   | 2                 |
 | Temporadas         | 8                | 6    | 2    | 0          | 0                   | 2                |
-| **Total**          | **42**           | **24** | **14** | **1**  | **3**               | **13**           |
+| **Total**          | **42**           | **24** | **17** | **1**  | **3**               | **14**           |
 
 > Alguns bugs impactam mais de uma área (ex: #3 e #4 afetam tanto Check-in quanto Pontos). Testes ad-hoc (CT-FRONTEND-01, CT-FRONTEND-02, CT-CHECKIN-XX) não constam na tabela de planejados por não terem sido previstos originalmente.
 
@@ -865,12 +865,3 @@ O sistema NaSalinha apresenta falhas críticas em todas as áreas testadas, send
 - **Integridade de dados:** Pontos são atribuídos e mantidos incorretamente, comprometendo a confiabilidade do ranking
 - **Regras de negócio:** Restrições de frequência de check-in e fluxo de moderação não estão implementados no backend
 - **Temporadas:** Ausência de validação de datas e inconsistência entre frontend e backend comprometem a confiabilidade do gerenciamento de temporadas
-
----
-
-## Próximos Passos
-
-- Acompanhar correção das issues críticas abertas (#1, #2, #3, #4, #5, #6, #8, #9, #12, #13)
-- Registrar resultados do caso marcado como "Indefinido" (CT-AUTH-18)
-- Executar os 3 casos de regressão após as correções (CT-AUTH-19, CT-CHECKIN-10, CT-PONTOS-05)
-- Adicionar evidências (prints das respostas no Insomnia) às issues abertas
