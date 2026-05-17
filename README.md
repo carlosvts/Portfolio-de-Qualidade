@@ -2,6 +2,9 @@
 
 **Trainee:** Carlos Vinicius Teixeira de Souza
 
+Link da apresentação: https://youtu.be/S5gSNV-5GAk
+
+
 ---
 
 ## Descrição
